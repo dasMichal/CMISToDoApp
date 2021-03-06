@@ -1,0 +1,50 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="none">
+        <item
+                android:id="@+id/nav_first_fragment"
+                android:icon="@drawable/ic_one"
+                android:title="First" />
+        <item
+                android:id="@+id/nav_second_fragment"
+                android:icon="@drawable/ic_two"
+                android:title="Second" />
+        <item
+                android:id="@+id/nav_third_fragment"
+                android:icon="@drawable/ic_three"
+                android:title="Third" />
+    </group>
+
+    <group
+            android:id="@+id/group1"
+            android:checkableBehavior="none">
+        <item
+                android:id="@+id/item1"
+                android:icon="@drawable/ic_favorite_24dp"
+                android:title="@string/title_1" />
+        <item
+                android:id="@+id/item2"
+                android:icon="@drawable/ic_favorite_24dp"
+                android:title="@string/title_2" />
+        <item
+                android:id="@+id/item3"
+                android:icon="@drawable/ic_favorite_24dp"
+                android:title="@string/title_3" />
+    </group>
+
+    <item
+            android:title="Sub items"
+            android:enabled="false"
+            android:checkable="true">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                        android:icon="@drawable/ic_dashboard"
+                        android:title="Sub item 1" />
+                <item
+                        android:icon="@drawable/ic_forum"
+                        android:title="Sub item 2" />
+            </group>
+        </menu>
+    </item>
+</menu>

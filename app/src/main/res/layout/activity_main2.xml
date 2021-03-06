@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".CreateToDo"
+        android:id="@+id/Contrainlayout">
+
+    <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:theme="?attr/actionBarTheme"
+            android:minHeight="?attr/actionBarSize"
+            android:id="@+id/toolbar2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:clickable="false"
+            android:contextClickable="false"
+            app:navigationIcon="@drawable/abc_vector_test"
+            app:title="ToDo1" />
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:contentPadding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar2"
+            android:id="@+id/cardView">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout">
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/radioButton3"
+                        android:layout_weight="0" />
+
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:text="ToDo1"
+                        android:ems="10"
+                        android:id="@+id/editTextTextPersonName2"
+                        android:layout_weight="0" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp">
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <ImageButton
+                            android:src="@drawable/ic_baseline_add_24"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/imageButton2"
+                            android:backgroundTint="#FFFFFF"
+                            android:layout_weight="0" />
+
+                    <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textPersonName"
+                            android:text="subtask1"
+                            android:ems="10"
+                            android:id="@+id/editTextTextPersonName4"
+                            android:layout_gravity="center"
+                            android:layout_weight="2" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <ImageButton
+                            android:src="@drawable/ic_baseline_add_24"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/imageButton2"
+                            android:backgroundTint="#FFFFFF"
+                            android:layout_weight="0" />
+
+                    <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textPersonName"
+                            android:text="subtask2"
+                            android:ems="10"
+                            android:id="@+id/editTextTextPersonName4"
+                            android:layout_gravity="center"
+                            android:layout_weight="2" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/timecard"
+            android:layout_marginVertical="20dp"
+            style="@style/CardView"
+            app:layout_constraintTop_toBottomOf="@id/cardView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.094"
+            android:layout_marginHorizontal="10dp"
+            app:contentPadding="10dp">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginVertical="10dp"
+                    android:layout_weight="0">
+
+                <ImageView
+                        android:src="@drawable/ic_baseline_access_time_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/imageView"
+                        android:layout_weight="0"
+                        tools:srcCompat="@drawable/ic_baseline_access_time_24" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/textView4"
+                        android:layout_weight="1"
+                        android:textAlignment="gravity"
+                        android:gravity="center"
+                        android:hint="Reminder"
+                        android:autoSizeTextType="none" />
+            </LinearLayout>
+
+            <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginVertical="10dp"
+                    android:layout_weight="2">
+
+                <ImageView
+                        android:src="@drawable/ic_baseline_access_time_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/imageView"
+                        android:layout_weight="0"
+                        tools:srcCompat="@drawable/ic_baseline_add_alert_24" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/textView4"
+                        android:layout_weight="1"
+                        android:textAlignment="gravity"
+                        android:gravity="center"
+                        android:hint="Due"
+                        android:autoSizeTextType="none" />
+            </LinearLayout>
+
+            <View
+                    android:id="@+id/divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:layout_weight="0" />
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginVertical="10dp">
+
+                <ImageView
+                        android:src="@drawable/ic_baseline_access_time_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/imageView"
+                        android:layout_weight="0"
+                        tools:srcCompat="@drawable/ic_baseline_location_on_24" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/textView4"
+                        android:layout_weight="1"
+                        android:textAlignment="gravity"
+                        android:gravity="center"
+                        android:hint="Location"
+                        android:autoSizeTextType="none" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timecard"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:foregroundGravity="bottom"
+            app:contentPadding="5dp"
+            app:layout_constraintVertical_bias="1.0">
+
+        <ImageButton
+                android:src="@drawable/ic_baseline_delete_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton4"
+                android:layout_weight="1"
+                android:layout_gravity="right" />
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
