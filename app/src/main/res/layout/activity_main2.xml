@@ -10,7 +10,7 @@
     <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/design_default_color_primary_dark"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
             android:id="@+id/toolbar2"
@@ -20,7 +20,8 @@
             android:clickable="false"
             android:contextClickable="false"
             app:navigationIcon="@drawable/abc_vector_test"
-            app:title="ToDo1" />
+            app:title="ToDo1"
+            app:titleTextColor="@color/design_default_color_on_primary" />
 
     <androidx.cardview.widget.CardView
             android:layout_width="0dp"
