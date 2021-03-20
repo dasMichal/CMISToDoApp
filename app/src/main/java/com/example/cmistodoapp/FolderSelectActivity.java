@@ -81,7 +81,12 @@ public class FolderSelectActivity extends AppCompatActivity
 
 
 
+		List<String> namesofFolders = new ArrayList<>();
 
+		namesofFolders.add("School");
+		namesofFolders.add("Exercise");
+		namesofFolders.add("Work");
+		namesofFolders.add("Vacation");
 
 
 
@@ -106,7 +111,8 @@ public class FolderSelectActivity extends AppCompatActivity
 			folderCard.setMinimumHeight((int) dptopx(100));
 
 			TextView playCardText = new TextView(this);
-			playCardText.setText(" "+ranNumbers.get(i));
+			//playCardText.setText(" "+ranNumbers.get(i));
+			playCardText.setText(" "+namesofFolders.get(i));
 			playCardText.setGravity(Gravity.CENTER);
 			playCardText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
