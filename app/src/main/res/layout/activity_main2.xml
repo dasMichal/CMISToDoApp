@@ -30,7 +30,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar2"
-            android:id="@+id/cardView">
+            android:id="@+id/ToDoTopCard">
 
         <LinearLayout
                 android:orientation="vertical"
@@ -41,12 +41,13 @@
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:id="@+id/todoName">
 
                 <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/radioButton3"
+                        android:id="@+id/todoradio_isdone"
                         android:layout_weight="0" />
 
                 <EditText
@@ -55,7 +56,7 @@
                         android:inputType="textPersonName"
                         android:text="ToDo1"
                         android:ems="10"
-                        android:id="@+id/editTextTextPersonName2"
+                        android:id="@+id/todoNameTextField"
                         android:layout_weight="0" />
 
             </LinearLayout>
@@ -64,12 +65,16 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp">
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/SubTaskLayout">
 
                 <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:id="@+id/Subtask1"
+                        android:visibility="gone"
+                        tools:visibility="gone">
 
                     <ImageButton
                             android:src="@drawable/ic_baseline_add_24"
@@ -85,7 +90,7 @@
                             android:inputType="textPersonName"
                             android:text="subtask1"
                             android:ems="10"
-                            android:id="@+id/editTextTextPersonName4"
+                            android:id="@+id/subTask1"
                             android:layout_gravity="center"
                             android:layout_weight="2" />
                 </LinearLayout>
@@ -93,7 +98,9 @@
                 <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        tools:visibility="gone"
+                        android:visibility="gone">
 
                     <ImageButton
                             android:src="@drawable/ic_baseline_add_24"
@@ -109,7 +116,7 @@
                             android:inputType="textPersonName"
                             android:text="subtask2"
                             android:ems="10"
-                            android:id="@+id/editTextTextPersonName4"
+                            android:id="@+id/subTask1"
                             android:layout_gravity="center"
                             android:layout_weight="2" />
                 </LinearLayout>
@@ -124,7 +131,7 @@
             android:id="@+id/timecard"
             android:layout_marginVertical="20dp"
             style="@style/CardView"
-            app:layout_constraintTop_toBottomOf="@id/cardView"
+            app:layout_constraintTop_toBottomOf="@id/ToDoTopCard"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -156,7 +163,7 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:id="@+id/textView4"
+                        android:id="@+id/todo_reminderText"
                         android:layout_weight="1"
                         android:textAlignment="gravity"
                         android:gravity="center"
@@ -189,7 +196,7 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:id="@+id/textView4"
+                        android:id="@+id/todo_reminderDue"
                         android:layout_weight="1"
                         android:textAlignment="gravity"
                         android:gravity="center"
@@ -222,7 +229,7 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:id="@+id/textView4"
+                        android:id="@+id/todo_reminderLocation"
                         android:layout_weight="1"
                         android:textAlignment="gravity"
                         android:gravity="center"

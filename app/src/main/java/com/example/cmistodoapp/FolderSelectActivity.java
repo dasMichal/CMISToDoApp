@@ -1,10 +1,6 @@
 package com.example.cmistodoapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.drawerlayout.widget.DrawerLayout;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -12,7 +8,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.google.android.material.card.MaterialCardView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -38,7 +38,7 @@ public class FolderSelectActivity extends AppCompatActivity
 		FloatingActionButton fab = findViewById(R.id.FAB_createFolder);
 		fab.setOnClickListener(view -> {
 
-			Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+			Snackbar.make(view, "Folders Created", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 			ranNumbers.add(1);
 			ranNumbers.add(2);
 			ranNumbers.add(3);
@@ -81,7 +81,12 @@ public class FolderSelectActivity extends AppCompatActivity
 
 
 
+		List<String> namesofFolders = new ArrayList<>();
 
+		namesofFolders.add("School");
+		namesofFolders.add("Exercise");
+		namesofFolders.add("Work");
+		namesofFolders.add("Vacation");
 
 
 
@@ -106,7 +111,8 @@ public class FolderSelectActivity extends AppCompatActivity
 			folderCard.setMinimumHeight((int) dptopx(100));
 
 			TextView playCardText = new TextView(this);
-			playCardText.setText(" "+ranNumbers.get(i));
+			//playCardText.setText(" "+ranNumbers.get(i));
+			playCardText.setText(" "+namesofFolders.get(i));
 			playCardText.setGravity(Gravity.CENTER);
 			playCardText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -117,13 +123,31 @@ public class FolderSelectActivity extends AppCompatActivity
 			folderCard.setElevation(10);
 			folderCard.addView(playCardText);
 			folderCard.setLayoutParams(RowLayout);
-			//folderCard.setOnClickListener(v -> compare2(ranNumbers, average, (Integer) folderCard.getTag()));
+			folderCard.setOnClickListener(v -> changeActivity(folderCard.getId(),playCardText.getText().toString()));
 			tr.addView(folderCard);
 
 
 		}
 
 	}
+
+
+
+
+
+
+
+	public void changeActivity(int id, String s)
+	{
+		Intent intent = new Intent(FolderSelectActivity.this, ToDoList.class);
+
+		intent.putExtra("selectedFolder", s);
+		startActivity(intent);      //Start New activity
+
+
+	}
+
+
 
 	public float dptopx(float dp)
 	{
