@@ -38,7 +38,7 @@ public class FolderSelectActivity extends AppCompatActivity
 		FloatingActionButton fab = findViewById(R.id.FAB_createFolder);
 		fab.setOnClickListener(view -> {
 
-			Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+			Snackbar.make(view, "Folders Created", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 			ranNumbers.add(1);
 			ranNumbers.add(2);
 			ranNumbers.add(3);
