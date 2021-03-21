@@ -25,10 +25,10 @@ interface OnAdapterItemClickListener
 
 public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 {
-	private List<Integer> data;
+	private List<String> data;
 	private final OnItemClickListener listener;
 
-	public TestRecycle(List<Integer> generateData,OnItemClickListener listener)
+	public TestRecycle(List<String> generateData, OnItemClickListener listener)
 	{
 		this.data = generateData;
 		this.listener = listener;
@@ -53,11 +53,11 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 	@Override
 	public void onBindViewHolder(TestRecycle.ViewHolder holder, int position)
 	{
-		holder.ToDoText.setText("ToDo Nr "+ this.data.get(position));
+		holder.ToDoText.setText(" "+this.data.get(position));
 		//System.out.println(this.data.get(position));
 		holder.ToDoChecked.setEnabled(true);
 
-		holder.todo1.setId(this.data.get(position));
+		holder.todo1.setId(this.data.size());
 		holder.bind(data.get(position), listener);
 
 	}
@@ -113,27 +113,50 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 			Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.ToDoText.getText(), Toast.LENGTH_SHORT).show();
 			Context context = view.getContext();
 
-
-
-
 			Intent intent = new Intent(context, ToDoEdit_Create.class);
 
 
 			intent.putExtra("toDoTitle",ToDoText.getText());
+			intent.putExtra("toDoID",todo1.getId());
 			context.startActivity(intent);
 
 		}
 
 
-		public void bind(Integer integer, OnItemClickListener listener)
+		public void bind(String integer, OnItemClickListener listener)
 		{
 			ToDoChecked.setOnClickListener(new View.OnClickListener() {
 				@Override public void onClick(View v)
 				{
-					listener.onItemClick(integer);
-					notifyItemRemoved(integer);
-					notifyItemRangeChanged(integer, getItemCount() - integer);
-					data.remove(data.size() - 1);
+					if (ToDoChecked.isChecked())
+					{
+
+
+						System.out.println(data);
+						//System.out.println(getLayoutPosition());
+						System.out.println(data.get(getLayoutPosition()));
+						//System.out.println(data.get(getAdapterPosition()));
+						System.out.println(ToDoChecked.isChecked());
+
+						//listener.onItemClick(integer);
+
+						int curSize = getItemCount();
+
+
+
+
+						Toast.makeText(v.getContext(), " "+integer.toString(), Toast.LENGTH_SHORT).show();
+
+
+
+					} else
+					{
+
+						System.out.println(ToDoChecked.isChecked());
+
+					}
+
+
 
 				}
 			});
