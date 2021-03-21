@@ -39,6 +39,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 	TimePickerDialog timePickerDialog;
 	DatePickerDialog datePickerDialog;
 	String ToDoTitle;
+	int toDoID;
 
 	int hour = 0;
 	int minute = 0;
@@ -59,7 +60,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 		Intent in = getIntent();
 
 		ToDoTitle = in.getStringExtra("toDoTitle");
-
+		toDoID = in.getIntExtra("toDoID",0);
+		System.out.println(toDoID);
 
 		init();
 		logic();
