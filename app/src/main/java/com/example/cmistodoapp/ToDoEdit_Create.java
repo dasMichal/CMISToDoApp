@@ -352,6 +352,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 	private void newSubText(int childCount)         //TODO Fix Not appearing SubTask field
 	{
 
+		//System.out.println("Child Count: "+childCount);
 		LinearLayout.LayoutParams LinParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
 		LinearLayout subRow = new LinearLayout(this);
@@ -363,6 +364,15 @@ public class ToDoEdit_Create extends AppCompatActivity
 		addIcon.setImageResource(R.drawable.ic_baseline_add_24);
 		addIcon.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0));
 
+		CheckBox subTaskCheckbox = new CheckBox(this);
+		subTaskCheckbox.setLayoutParams(new LinearLayout.LayoutParams((int) dptopx(33), LinearLayout.LayoutParams.MATCH_PARENT, 0));
+
+
+
+
+
+
+
 
 
 		EditText newSubText = new EditText(this);
@@ -370,6 +380,43 @@ public class ToDoEdit_Create extends AppCompatActivity
 		newSubText.setHint("Subtask");
 		newSubText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 2));
 		newSubText.setSingleLine(true);
+
+
+		subTaskCheckbox.setOnClickListener(v ->
+		{
+
+			/**
+			LinearLayout parent = (LinearLayout) v.getParent().getParent();
+			int index = parent.indexOfChild((View) v.getParent());
+			System.out.println("Index: "+index);
+			LinearLayout subparent = (LinearLayout) v.getParent();
+			 **/
+
+
+			if (subTaskCheckbox.isChecked())
+			{
+
+				System.out.println(subTaskCheckbox.isChecked());
+				newSubText.setEnabled(false);
+			} else
+			{
+
+				newSubText.setEnabled(true);
+				System.out.println(subTaskCheckbox.isChecked());
+
+
+
+			}
+
+
+
+
+
+
+
+		});
+
+
 
 
 		newSubText.setOnEditorActionListener(new TextView.OnEditorActionListener()
@@ -460,6 +507,14 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 	}
+
+
+
+	public float dptopx(float dp)
+	{
+		return dp * getResources().getDisplayMetrics().density;
+	}
+
 
 
 }
