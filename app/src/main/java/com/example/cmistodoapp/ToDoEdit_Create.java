@@ -294,20 +294,42 @@ public class MainActivity2 extends AppCompatActivity
 			@Override
 			public void onFocusChange(View v, boolean hasFocus)
 			{
-				if ((!hasFocus) & newSubText.getText().toString().isEmpty()) // code to execute when EditText loses focus and field is empty
+
+				if (hasFocus)
+				{
+
+					return;
+
+				}
+
+				LinearLayout parent = (LinearLayout) v.getParent().getParent();
+				int index = parent.indexOfChild((View) v.getParent());
+				System.out.println("Index: "+index);
+				int getchildCount = subTaskLayout.getChildCount() ;
+				System.out.println("ChildCount "+getchildCount);
+				System.out.println(index < getchildCount);
+
+
+
+
+				//if ((!hasFocus) & newSubText.getText().toString().isEmpty() & index != 0 & index+1 < getchildCount ) // code to execute when EditText loses focus and field is empty
+				if ((!hasFocus) & newSubText.getText().toString().isEmpty() & index+1 < getchildCount ) // code to execute when EditText loses focus and field is empty
 				{
 
 					System.out.println("LOSE FOCUS EMPTY");
 					System.out.println(newSubText.getText().toString());
-					System.out.println(newSubText.getText().length());
-					subTaskLayout.removeViewAt(childCount);       //TODO Fix bug with childCound
-				}
+					//System.out.println(newSubText.getText().length());
+					System.out.println("Index Empty: "+index);
+					subTaskLayout.removeViewAt(index);
 
-				if ((!hasFocus) & !newSubText.getText().toString().isEmpty())
+				}else if ((!hasFocus) & !newSubText.getText().toString().isEmpty() & index+1 == getchildCount )
 				{
 					System.out.println("LOSE FOCUS Full");
 					System.out.println(newSubText.getText().toString());
-					System.out.println(newSubText.getText().length());
+					//System.out.println(newSubText.getText().length());
+
+					System.out.println("Index Full: "+index);
+
 					newSubText(subTaskLayout.getChildCount());
 
 				}
@@ -318,7 +340,10 @@ public class MainActivity2 extends AppCompatActivity
 
 
 
-		subRow.addView(addIcon);
+
+
+		//subRow.addView(addIcon);
+		subRow.addView(subTaskCheckbox);
 		subRow.addView(newSubText);
 		subTaskLayout.addView(subRow);
 
