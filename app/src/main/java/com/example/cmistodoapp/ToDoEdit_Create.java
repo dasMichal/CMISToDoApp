@@ -8,23 +8,24 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
+import static java.util.TimeZone.getDefault;
 
 
 public class ToDoEdit_Create extends AppCompatActivity
@@ -34,23 +35,23 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 
-	TextView randomNumberBoundText;
+
 	EditText todoNameTextField;
-	EditText subTask1;
 	TextView todo_reminderText;
-	RadioButton IsDone;
+	TextView todo_reminderDue;
+	Toolbar toolbar;
+	CheckBox IsDone;
 	LinearLayout subTaskLayout;
 	MaterialTimePicker timePicker;
-	FragmentManager FragManager;
-	FragmentManager manager = getSupportFragmentManager();
-	Calendar calendar;
 	TimePickerDialog timePickerDialog;
 	DatePickerDialog datePickerDialog;
-	String usrName;
+	String ToDoTitle;
 
-	int numSubtask = 0;
 	int hour = 0;
 	int minute = 0;
+	int year;
+	int month;
+	int dayofmonth;
 
 
 
@@ -66,13 +67,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 		Intent in = getIntent();
 
-		usrName = in.getStringExtra("toDoTitle");
-		/*
-		scoreArray = in.getIntArrayExtra("scoreArray");
-		totalScore = in.getIntExtra("totalScore",0);
-		totalTime = in.getLongExtra("totalTime",0);
-		*/
-
+		ToDoTitle = in.getStringExtra("toDoTitle");
 
 
 		init();
@@ -91,12 +86,15 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 		todoNameTextField = findViewById(R.id.todoNameTextField);
-		subTask1 = findViewById(R.id.subTask1);
-		IsDone = findViewById(R.id.todoradio_isdone);
+		//subTask1 = findViewById(R.id.subTask1);
+		IsDone = findViewById(R.id.todocheck_isdone);
 		subTaskLayout = findViewById(R.id.SubTaskLayout);
 		todo_reminderText = findViewById(R.id.todo_reminderText);
+		todo_reminderDue = findViewById(R.id.todo_reminderDue);
+		toolbar = findViewById(R.id.toolbar2);
+		toolbar.setTitle(ToDoTitle);
+		todoNameTextField.setText(ToDoTitle);
 
-		todoNameTextField.setText(usrName);
 
 		//endGame.setOnClickListener(v -> endGame(usrName,scoreArray,score));
 
@@ -181,15 +179,38 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 		};
 
+
+		DatePickerDialog.OnDateSetListener DataSetListener = new DatePickerDialog.OnDateSetListener()
+		{
+			@Override
+			public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
+			{
+
+
+
+
+			}
+		};
+
+
+
+
+
+
+
+
 		todo_reminderText.setOnClickListener(v ->
 		{
-
 			getTime();
+			showTimePicker(v,0);
 
-			timePickerDialog = new TimePickerDialog(this,TimeSetListener,hour,minute,true);
+		});
 
-			timePickerDialog.show();
 
+		todo_reminderDue.setOnClickListener(v ->
+		{
+			getTime();
+			showTimePicker(v,1);
 
 		});
 
@@ -204,7 +225,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 		//navHostFragment.getChildFragmentManager().getFragments().get(0);
 
 		Calendar calendar = Calendar.getInstance(Locale.GERMANY);
-		calendar.setTimeZone(TimeZone.getDefault());
+		calendar.setTimeZone(getDefault());
 
 
 		//calendar.setTime(new SimpleDateFormat().parse("dd-MM-yyyy"));
@@ -233,15 +254,100 @@ public class ToDoEdit_Create extends AppCompatActivity
 	{
 
 
-		Calendar calendar = Calendar.getInstance(Locale.GERMANY);
-		calendar.setTimeZone(TimeZone.getDefault());
+		//Calendar calendar = Calendar.getInstance(Locale.GERMANY);
+		Calendar calendar = Calendar.getInstance(Locale.getDefault());
+		calendar.setTimeZone(getDefault());
 		hour = calendar.get(Calendar.HOUR_OF_DAY);
 		minute = calendar.get(Calendar.MINUTE);
+		year = calendar.get(Calendar.YEAR);
+		month = calendar.get(Calendar.MONTH)+1;
+		dayofmonth = calendar.get(Calendar.DAY_OF_MONTH);
+
 		System.out.println("Stunde "+hour);
 		System.out.println("Minute "+ minute);
 
+		System.out.println("tag: "+dayofmonth);
+		System.out.println("Monat: "+month);
+		System.out.println("Jahr: "+year);
+
 
 	}
+
+
+	private void showTimePicker(View textView, int whatTextView)
+	{
+
+		TimePickerDialog.OnTimeSetListener TimeSetListener = new TimePickerDialog.OnTimeSetListener()
+		{
+			@Override
+			public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+			{
+				System.out.println("Time Set succesfull");
+				//todo_reminderText.setText(" "+hourOfDay+" "+minute);
+				showDatePicker(textView,whatTextView,hourOfDay,minute);
+
+			}
+
+
+		};
+
+
+
+		timePickerDialog = new TimePickerDialog(this,TimeSetListener,hour,minute,true);
+
+		timePickerDialog.show();
+
+	}
+
+	private void showDatePicker(View textView, int whatTextView, int hourOfDay, int minute)
+	{
+
+		DatePickerDialog.OnDateSetListener DataSetListener = new DatePickerDialog.OnDateSetListener()
+		{
+			@Override
+			public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
+			{
+
+				System.out.println("Data Set succesfull");
+				//todo_reminderText.setText(" "+hourOfDay+" "+minute);
+
+
+
+				Calendar myDate = Calendar.getInstance(Locale.getDefault());
+				myDate.setTimeZone(getDefault());
+				myDate.set(year,month,dayOfMonth,hourOfDay,minute);
+				System.out.println(myDate.getTime());
+				TextView text = (TextView) textView;
+
+
+
+				switch(whatTextView)
+				{
+					case 0:
+						text.setText(getResources().getString(R.string.reminder_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
+						break;
+					case 1:
+						text.setText(getResources().getString(R.string.due_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
+						break;
+					default:
+						System.out.println("Should not Happen");
+						break;
+
+
+				}
+
+
+
+			}
+		};
+
+
+		datePickerDialog = new DatePickerDialog(this,DataSetListener,year,month,dayofmonth);
+
+		datePickerDialog.show();
+
+	}
+
 
 	private void newSubText(int childCount)         //TODO Fix Not appearing SubTask field
 	{
