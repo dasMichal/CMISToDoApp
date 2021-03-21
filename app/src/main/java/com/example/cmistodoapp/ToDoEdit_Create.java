@@ -138,7 +138,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 			}
 		});
 
-
+		/**
 		subTask1.addTextChangedListener(new TextWatcher()
 		{
 
@@ -162,7 +162,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 				//newSubText(subTaskLayout.getChildCount());
 			}
 		});
-
+		**/
 
 		TimePickerDialog.OnTimeSetListener TimeSetListener = new TimePickerDialog.OnTimeSetListener()
 		{
@@ -426,13 +426,13 @@ public class ToDoEdit_Create extends AppCompatActivity
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 			{
 
-				System.out.println("Editor Action");
-				System.out.println(actionId);
-				System.out.println(event);
-				System.out.println(KeyEvent.keyCodeToString(actionId));
+				//System.out.println("Editor Action");
+				//System.out.println(actionId);
+				//System.out.println(event);
+				//System.out.println(KeyEvent.keyCodeToString(actionId));
 				if (actionId == KeyEvent.KEYCODE_ENDCALL)
 				{
-					System.out.println("Enter pressed");
+					//System.out.println("Enter pressed");
 					newSubText.clearFocus();
 				}
 				return false;
