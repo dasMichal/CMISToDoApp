@@ -21,13 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToDoList extends AppCompatActivity implements OnAdapterItemClickListener
+public class ToDoList extends AppCompatActivity
 {
 
 	List<String> data2 = new ArrayList<>();
 
 	Toolbar toolbar;
-
+	TestRecycle adapter;
 
 
 	@Override
@@ -39,26 +39,52 @@ public class ToDoList extends AppCompatActivity implements OnAdapterItemClickLis
 		//createToDoList();
 
 		RecyclerView recyclerView = findViewById(R.id.RecycleTestID);
-		RecyclerView recyclerViewDone = findViewById(R.id.RecycleDone);
-		TestRecycle adapter = new TestRecycle(generateData());
+
+		 adapter = new TestRecycle(generateData(), new TestRecycle.OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(Integer item)
+			{
+				System.out.println("Hi");
+				System.out.println(item);
+				//recyclerView.removeViewAt(item);
+				//adapter.notifyItemRemoved(item);
+
+
+			}
+
+		});
+
+
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		//recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
 
 
-		Intent in = getIntent();
 
+		/**
+		RecyclerView recyclerViewDone = findViewById(R.id.RecycleDone);
+		CustomAdapter custadapter = new CustomAdapter(generateData());
+		recyclerViewDone.setAdapter(custadapter);
+		recyclerViewDone.setLayoutManager(new LinearLayoutManager(this));
+		**/
+
+
+		Intent in = getIntent();
 		toolbar.setTitle(in.getStringExtra("selectedFolder"));
 
 
+		logic();
 	}
 
-	@Override
-	public void onAdapterItemClickListener(int v)
+
+
+	public void logic()
 	{
-		System.out.println("huhu");
-		//System.out.println(v);
+
+
+		System.out.println("LOL");
 
 
 	}
