@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -17,6 +18,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +86,52 @@ public class ToDoList extends AppCompatActivity
 
 
 		System.out.println("LOL");
+
+
+		fabToDoCreate.setOnClickListener(v ->
+		{
+			final EditText input = new EditText(this);
+			input.setSingleLine(true);
+				new MaterialAlertDialogBuilder(this)
+						.setTitle("Name of ToDo")
+						//.setMessage("")
+						.setCancelable(true)
+						.setView(input)
+						.setPositiveButton("Okay",(dialog, which) ->
+						{
+							{
+
+								if (input.getText().toString().isEmpty())
+								{
+
+									return;
+
+								}else
+								{
+
+									toDoTitle.add(input.getText().toString());
+									System.out.println(toDoData);
+									adapter.notifyDataSetChanged();
+
+								}
+
+
+
+
+							}
+						}).show();
+
+
+
+
+
+
+
+
+
+
+		});
+
 
 
 	}
