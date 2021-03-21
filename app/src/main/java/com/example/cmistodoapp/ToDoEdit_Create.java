@@ -135,9 +135,13 @@ public class ToDoEdit_Create extends AppCompatActivity
 		{
 
 
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after)
-			{
+			Intent intent = new Intent(ToDoEdit_Create.this, ToDoList.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			//intent.putExtra("toDoName",todoNameTextField.getText().toString());
+			//intent.putExtra("toDoID",toDoID);
+			//startActivity(intent);
+			finish();
+			startActivityIfNeeded(intent, 0);
 
 
 
@@ -285,7 +289,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 	}
 
 
-	private void newSubText(int childCount)         //TODO Fix Not appearing SubTask field
+	private void newSubText(int childCount)
 	{
 
 		//System.out.println("Child Count: "+childCount);
