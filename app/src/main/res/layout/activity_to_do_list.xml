@@ -294,7 +294,25 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintTop_toBottomOf="@+id/RecycleTestID"
             app:layout_constraintVertical_bias="0.0"
-            android:id="@+id/RecycleDone" />
+            android:id="@+id/RecycleDone" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_addToDo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/ic_baseline_add_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.952"
+            android:layout_marginBottom="36dp"
+            app:fabSize="auto"
+            android:pointerIcon="none" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
