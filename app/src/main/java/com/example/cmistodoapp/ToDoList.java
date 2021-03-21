@@ -28,6 +28,12 @@ public class ToDoList extends AppCompatActivity
 
 	Toolbar toolbar;
 	TestRecycle adapter;
+	FloatingActionButton fabToDoCreate;
+	RecyclerView recyclerView;
+	List<Integer> toDoData = new ArrayList<>();
+	List<String> toDoTitle = new ArrayList<>();
+	int count = 0;
+
 
 
 	@Override
@@ -35,25 +41,20 @@ public class ToDoList extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_to_do_list);
+
 		toolbar = findViewById(R.id.toolbar);
-		//createToDoList();
 
-		RecyclerView recyclerView = findViewById(R.id.RecycleTestID);
-
-		 adapter = new TestRecycle(generateData(), new TestRecycle.OnItemClickListener()
-		{
-			@Override
-			public void onItemClick(Integer item)
-			{
-				System.out.println("Hi");
-				System.out.println(item);
-				//recyclerView.removeViewAt(item);
-				//adapter.notifyItemRemoved(item);
+		recyclerView = findViewById(R.id.RecycleTestID);
+		fabToDoCreate = findViewById(R.id.fab_addToDo);
 
 
-			}
-
-		});
+		 adapter = new TestRecycle(toDoTitle, item ->
+		 {
+			 //System.out.println("Hi");
+			//System.out.println(item);
+			 //recyclerView.removeViewAt(item);
+			 //adapter.notifyItemRemoved(item);
+		 });
 
 
 		recyclerView.setAdapter(adapter);
@@ -71,8 +72,6 @@ public class ToDoList extends AppCompatActivity
 
 		Intent in = getIntent();
 		toolbar.setTitle(in.getStringExtra("selectedFolder"));
-
-
 		logic();
 	}
 
