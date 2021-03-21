@@ -61,14 +61,12 @@ public class ToDoList extends AppCompatActivity
 		//recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
 
-
-
-		/**
+		/*
 		RecyclerView recyclerViewDone = findViewById(R.id.RecycleDone);
 		CustomAdapter custadapter = new CustomAdapter(generateData());
 		recyclerViewDone.setAdapter(custadapter);
 		recyclerViewDone.setLayoutManager(new LinearLayoutManager(this));
-		**/
+		*/
 
 
 		Intent in = getIntent();
@@ -163,7 +161,7 @@ public class ToDoList extends AppCompatActivity
 
 
 
-			/**
+			/*
 			CardView folderCard = new CardView(this);
 
 			folderCard.setMinimumWidth((int) dptopx(100));
@@ -182,7 +180,7 @@ public class ToDoList extends AppCompatActivity
 			folderCard.addView(playCardText);
 			folderCard.setLayoutParams(RowLayout);
 			folderCard.setOnClickListener(v -> changeActivity());
-			**/
+			*/
 
 
 	}
