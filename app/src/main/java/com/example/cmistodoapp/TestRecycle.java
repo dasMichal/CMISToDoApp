@@ -43,7 +43,8 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 
 
 	@Override
-	public TestRecycle.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+	public TestRecycle.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+	{
 		View rowItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_card_layout, parent, false);
 		return new ViewHolder(rowItem);
 	}
