@@ -26,18 +26,18 @@ interface OnAdapterItemClickListener
 public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 {
 	private List<Integer> data;
+	private final OnItemClickListener listener;
 
-	private OnAdapterItemClickListener adapterItemClickListener = null;
-
-	public TestRecycle(OnAdapterItemClickListener listener)
-	{
-		this.adapterItemClickListener = listener;
-	}
-
-
-	public TestRecycle(List<Integer> generateData)
+	public TestRecycle(List<Integer> generateData,OnItemClickListener listener)
 	{
 		this.data = generateData;
+		this.listener = listener;
+	}
+
+	public interface OnItemClickListener
+	{
+		void onItemClick(Integer item);
+
 	}
 
 
@@ -48,11 +48,18 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 		return new ViewHolder(rowItem);
 	}
 
+
+
 	@Override
-	public void onBindViewHolder(TestRecycle.ViewHolder holder, int position) {
+	public void onBindViewHolder(TestRecycle.ViewHolder holder, int position)
+	{
 		holder.ToDoText.setText("ToDo Nr "+ this.data.get(position));
-		System.out.println(this.data.get(position));
+		//System.out.println(this.data.get(position));
+		holder.ToDoChecked.setEnabled(true);
+
 		holder.todo1.setId(this.data.get(position));
+		holder.bind(data.get(position), listener);
+
 	}
 
 	@Override
@@ -63,8 +70,8 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 
 
 
-
-	public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+	public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+	{
 		private TextView ToDoText;
 		private CheckBox ToDoChecked;
 		private CardView todo1;
@@ -83,9 +90,10 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 			ToDoChecked.setOnClickListener(v ->
 			{
 
-
 				//Toast.makeText(this, "Checked : " + getLayoutPosition()+" "), Toast.LENGTH_SHORT).show();
 				Toast.makeText(v.getContext(), "Checked : " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+
+
 
 
 			});
@@ -101,16 +109,14 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 		public void onClick(View view)
 		{
 
-			//adapterItemClickListener.onAdapterItemClickListener(getAdapterPosition());
+
 			Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.ToDoText.getText(), Toast.LENGTH_SHORT).show();
-
-
-
-
-			//view.getContext().startActivity(new Intent(view.getContext(), MainActivity2.class));
 			Context context = view.getContext();
-			Intent intent = new Intent(context, MainActivity2.class);
 
+
+
+
+			Intent intent = new Intent(context, ToDoEdit_Create.class);
 
 
 			intent.putExtra("toDoTitle",ToDoText.getText());
@@ -119,9 +125,21 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 		}
 
 
+		public void bind(Integer integer, OnItemClickListener listener)
+		{
+			ToDoChecked.setOnClickListener(new View.OnClickListener() {
+				@Override public void onClick(View v)
+				{
+					listener.onItemClick(integer);
+					notifyItemRemoved(integer);
+					notifyItemRangeChanged(integer, getItemCount() - integer);
+					data.remove(data.size() - 1);
 
-
+				}
+			});
+		}
 	}
+
 
 }
 
