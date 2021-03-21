@@ -4,8 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -31,18 +29,13 @@ import static java.util.TimeZone.getDefault;
 public class ToDoEdit_Create extends AppCompatActivity
 {
 
-
-
-
-
-
 	EditText todoNameTextField;
 	TextView todo_reminderText;
 	TextView todo_reminderDue;
 	Toolbar toolbar;
 	CheckBox IsDone;
 	LinearLayout subTaskLayout;
-	MaterialTimePicker timePicker;
+	//MaterialTimePicker timePicker;
 	TimePickerDialog timePickerDialog;
 	DatePickerDialog datePickerDialog;
 	String ToDoTitle;
@@ -62,8 +55,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main2);
-
-
 
 		Intent in = getIntent();
 
@@ -96,7 +87,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 		todoNameTextField.setText(ToDoTitle);
 
 
-		//endGame.setOnClickListener(v -> endGame(usrName,scoreArray,score));
 
 
 	}
@@ -105,12 +95,10 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 
-
-
 	public void logic()
 	{
 
-
+		/*
 		todoNameTextField.addTextChangedListener(new TextWatcher()
 		{
 
@@ -138,8 +126,10 @@ public class ToDoEdit_Create extends AppCompatActivity
 			}
 		});
 
-		/**
-		subTask1.addTextChangedListener(new TextWatcher()
+		*/
+
+
+		toolbar.setNavigationOnClickListener(v ->
 		{
 
 
@@ -147,56 +137,9 @@ public class ToDoEdit_Create extends AppCompatActivity
 			public void beforeTextChanged(CharSequence s, int start, int count, int after)
 			{
 
-			}
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count)
-			{
 
-			}
-
-			@Override
-			public void afterTextChanged(Editable s)
-			{
-				System.out.println("After change");
-				//newSubText(subTaskLayout.getChildCount());
-			}
 		});
-		**/
-
-		TimePickerDialog.OnTimeSetListener TimeSetListener = new TimePickerDialog.OnTimeSetListener()
-		{
-			@Override
-			public void onTimeSet(TimePicker view, int hourOfDay, int minute)
-			{
-				System.out.println("Time Set succesfull");
-				todo_reminderText.setText(" "+hourOfDay+" "+minute);
-				System.out.println(view.getParent());
-
-
-			}
-
-
-		};
-
-
-		DatePickerDialog.OnDateSetListener DataSetListener = new DatePickerDialog.OnDateSetListener()
-		{
-			@Override
-			public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
-			{
-
-
-
-
-			}
-		};
-
-
-
-
-
-
 
 
 		todo_reminderText.setOnClickListener(v ->
@@ -213,9 +156,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 			showTimePicker(v,1);
 
 		});
-
-
-
 
 
 
@@ -241,11 +181,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 		MatTimePicker.setHour(Calendar.HOUR_OF_DAY);
 		MatTimePicker.setMinute(Calendar.MINUTE);
 		//MatTimePicker.build().show(manager,"MatTimePicker");
-
-
-
-
-
 
 
 	}
@@ -312,7 +247,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 				//todo_reminderText.setText(" "+hourOfDay+" "+minute);
 
 
-
 				Calendar myDate = Calendar.getInstance(Locale.getDefault());
 				myDate.setTimeZone(getDefault());
 				myDate.set(year,month,dayOfMonth,hourOfDay,minute);
@@ -369,12 +303,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 
-
-
-
-
-
-
 		EditText newSubText = new EditText(this);
 		//newSubText.setText(""+(childCount+1));
 		newSubText.setHint("Subtask");
@@ -385,12 +313,12 @@ public class ToDoEdit_Create extends AppCompatActivity
 		subTaskCheckbox.setOnClickListener(v ->
 		{
 
-			/**
+			/*
 			LinearLayout parent = (LinearLayout) v.getParent().getParent();
 			int index = parent.indexOfChild((View) v.getParent());
 			System.out.println("Index: "+index);
 			LinearLayout subparent = (LinearLayout) v.getParent();
-			 **/
+			 */
 
 
 			if (subTaskCheckbox.isChecked())
