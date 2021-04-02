@@ -12,8 +12,8 @@
     <string name="reminder_with_time">Reminding at %1$d:%2$d on %3$d.%4$d </string>
 
     <string name="due_with_time">Due till %1$d:%2$d on %3$d.%4$d </string>
-
-
+    <string name="channel_name">Uff</string>
+    <string name="channel_description">BIG UFFF</string>
 
 
 </resources>

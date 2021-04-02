@@ -1,8 +1,14 @@
 package com.example.cmistodoapp;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,9 +22,8 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.material.timepicker.MaterialTimePicker;
-import com.google.android.material.timepicker.TimeFormat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -29,6 +34,7 @@ import static java.util.TimeZone.getDefault;
 public class ToDoEdit_Create extends AppCompatActivity
 {
 
+	private static final String CHANNEL_ID = "Seven" ;
 	EditText todoNameTextField;
 	TextView todo_reminderText;
 	TextView todo_reminderDue;
@@ -47,8 +53,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 	int month;
 	int dayofmonth;
 
-
-
+	AlarmManager alarmMgr;
+	PendingIntent alarmIntent;
 
 
 	@Override
@@ -66,6 +72,35 @@ public class ToDoEdit_Create extends AppCompatActivity
 		init();
 		logic();
 		newSubText(subTaskLayout.getChildCount());
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+				.setSmallIcon(R.drawable.ic_baseline_location_on_24)
+				.setContentTitle("Uffffff")
+				.setContentText("BIG UFFFFF")
+				.setChannelId(CHANNEL_ID)
+				.setCategory(NotificationCompat.CATEGORY_MESSAGE)
+				.setAllowSystemGeneratedContextualActions(true)
+				.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+
+
+
+		createNotificationChannel();
+		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+	// notificationId is a unique int for each notification that you must define
+		notificationManager.notify(420, builder.build());
+
+
+
+		alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(this, FolderSelectActivity.class);
+		alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+
+
+
+
 
 	}
 
@@ -92,6 +127,26 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 	}
+
+
+
+	private void createNotificationChannel() {
+		// Create the NotificationChannel, but only on API 26+ because
+		// the NotificationChannel class is new and not in the support library
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			CharSequence name = getString(R.string.channel_name);
+			String description = getString(R.string.channel_description);
+			int importance = NotificationManager.IMPORTANCE_DEFAULT;
+			NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+			channel.setDescription(description);
+
+			// Register the channel with the system; you can't change the importance
+			// or other notification behaviors after this
+			NotificationManager notificationManager = getSystemService(NotificationManager.class);
+			notificationManager.createNotificationChannel(channel);
+		}
+	}
+
 
 
 
@@ -148,6 +203,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 		});
 
 
+
 		todo_reminderText.setOnClickListener(v ->
 		{
 			getTime();
@@ -164,11 +220,11 @@ public class ToDoEdit_Create extends AppCompatActivity
 		});
 
 
-
-
 		//System.out.println(subTaskLayout.getChildCount());
 		//NavHostFragment navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host);
 		//navHostFragment.getChildFragmentManager().getFragments().get(0);
+
+
 
 		Calendar calendar = Calendar.getInstance(Locale.GERMANY);
 		calendar.setTimeZone(getDefault());
@@ -179,7 +235,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 		//Calendar.getInstance(Locale.GERMANY);
 		//System.out.println();
 
-
+		/*
 		MaterialTimePicker.Builder MatTimePicker = new MaterialTimePicker.Builder();
 
 		MatTimePicker.setTitleText("Hallo");
@@ -187,6 +243,9 @@ public class ToDoEdit_Create extends AppCompatActivity
 		MatTimePicker.setHour(Calendar.HOUR_OF_DAY);
 		MatTimePicker.setMinute(Calendar.MINUTE);
 		//MatTimePicker.build().show(manager,"MatTimePicker");
+
+		*/
+
 
 
 	}
@@ -215,6 +274,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 	}
 
 
+
+
 	private void showTimePicker(View textView, int whatTextView)
 	{
 
@@ -229,9 +290,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 			}
 
-
 		};
-
 
 
 		timePickerDialog = new TimePickerDialog(this,TimeSetListener,hour,minute,true);
@@ -239,6 +298,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 		timePickerDialog.show();
 
 	}
+
+
 
 	private void showDatePicker(View textView, int whatTextView, int hourOfDay, int minute)
 	{
@@ -258,6 +319,21 @@ public class ToDoEdit_Create extends AppCompatActivity
 				myDate.set(year,month,dayOfMonth,hourOfDay,minute);
 				System.out.println(myDate.getTime());
 				TextView text = (TextView) textView;
+
+
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTimeInMillis(System.currentTimeMillis());
+				//calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+				//calendar.set(Calendar.MINUTE,minute);
+				calendar.set(year,month,dayOfMonth,hourOfDay,minute);
+
+
+				// With setInexactRepeating(), you have to use one of the AlarmManager interval
+				// constants--in this case, AlarmManager.INTERVAL_DAY.
+				alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+						AlarmManager.INTERVAL_DAY, alarmIntent);
+
 
 
 
