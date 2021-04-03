@@ -17,11 +17,6 @@ import java.util.List;
 
 
 
-interface OnAdapterItemClickListener
-{
-	void onAdapterItemClickListener(int position);
-}
-
 
 public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 {
@@ -90,13 +85,8 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 
 			ToDoChecked.setOnClickListener(v ->
 			{
-
 				//Toast.makeText(this, "Checked : " + getLayoutPosition()+" "), Toast.LENGTH_SHORT).show();
 				Toast.makeText(v.getContext(), "Checked : " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
-
-
-
-
 			});
 
 
@@ -159,7 +149,6 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 
 
 
-				}
 			});
 		}
 	}
