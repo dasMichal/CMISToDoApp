@@ -75,8 +75,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
 				.setSmallIcon(R.drawable.ic_baseline_location_on_24)
-				.setContentTitle("Uffffff")
-				.setContentText("BIG UFFFFF")
+				.setContentTitle("Send Help")
+				.setContentText("How to Schedule a notification Josh/Marcus ? ")
 				.setChannelId(CHANNEL_ID)
 				.setCategory(NotificationCompat.CATEGORY_MESSAGE)
 				.setAllowSystemGeneratedContextualActions(true)
