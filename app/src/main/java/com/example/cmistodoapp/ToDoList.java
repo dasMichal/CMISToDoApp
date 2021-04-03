@@ -32,6 +32,7 @@ public class ToDoList extends AppCompatActivity
 
 	Toolbar toolbar;
 	TestRecycle adapter;
+	TestRecycle custadapter;
 	FloatingActionButton fabToDoCreate;
 	RecyclerView recyclerView;
 	List<Integer> toDoData = new ArrayList<>();
@@ -66,12 +67,21 @@ public class ToDoList extends AppCompatActivity
 		//recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
 
-		/*
+
+
 		RecyclerView recyclerViewDone = findViewById(R.id.RecycleDone);
-		CustomAdapter custadapter = new CustomAdapter(generateData());
+		//CustomAdapter custadapter = new CustomAdapter(generateData());
+		custadapter = new TestRecycle(toDoTitle, item ->
+		{
+			//System.out.println("Hi");
+			//System.out.println(item);
+			//recyclerView.removeViewAt(item);
+			//adapter.notifyItemRemoved(item);
+		});
+
 		recyclerViewDone.setAdapter(custadapter);
 		recyclerViewDone.setLayoutManager(new LinearLayoutManager(this));
-		*/
+
 
 
 		Intent in = getIntent();
