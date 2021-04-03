@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -18,15 +19,25 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToDoList extends AppCompatActivity implements OnAdapterItemClickListener
+public class ToDoList extends AppCompatActivity
 {
 
 	List<String> data2 = new ArrayList<>();
 
 	Toolbar toolbar;
+	TestRecycle adapter;
+	TestRecycle custadapter;
+	FloatingActionButton fabToDoCreate;
+	RecyclerView recyclerView;
+	List<Integer> toDoData = new ArrayList<>();
+	List<String> toDoTitle = new ArrayList<>();
+	int count = 0;
 
 
 
@@ -35,30 +46,93 @@ public class ToDoList extends AppCompatActivity implements OnAdapterItemClickLis
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_to_do_list);
-		toolbar = findViewById(R.id.toolbar);
-		//createToDoList();
 
-		RecyclerView recyclerView = findViewById(R.id.RecycleTestID);
-		RecyclerView recyclerViewDone = findViewById(R.id.RecycleDone);
-		TestRecycle adapter = new TestRecycle(generateData());
+		toolbar = findViewById(R.id.toolbar);
+
+		recyclerView = findViewById(R.id.RecycleTestID);
+		fabToDoCreate = findViewById(R.id.fab_addToDo);
+
+
+		 adapter = new TestRecycle(toDoTitle, item ->
+		 {
+			 //System.out.println("Hi");
+			//System.out.println(item);
+			 //recyclerView.removeViewAt(item);
+			 //adapter.notifyItemRemoved(item);
+		 });
+
+
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		//recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
 
 
+
+		RecyclerView recyclerViewDone = findViewById(R.id.RecycleDone);
+		//CustomAdapter custadapter = new CustomAdapter(generateData());
+		custadapter = new TestRecycle(toDoTitle, item ->
+		{
+			//System.out.println("Hi");
+			//System.out.println(item);
+			//recyclerView.removeViewAt(item);
+			//adapter.notifyItemRemoved(item);
+		});
+
+		recyclerViewDone.setAdapter(custadapter);
+		recyclerViewDone.setLayoutManager(new LinearLayoutManager(this));
+
+
+
 		Intent in = getIntent();
-
 		toolbar.setTitle(in.getStringExtra("selectedFolder"));
-
-
+		logic();
 	}
 
-	@Override
-	public void onAdapterItemClickListener(int v)
+
+
+	public void logic()
 	{
-		System.out.println("huhu");
-		//System.out.println(v);
+
+
+		System.out.println("LOL");
+
+
+		fabToDoCreate.setOnClickListener(v ->
+		{
+			final EditText input = new EditText(this);
+			input.setSingleLine(true);
+				new MaterialAlertDialogBuilder(this)
+						.setTitle("Name of ToDo")
+						//.setMessage("")
+						.setCancelable(true)
+						.setView(input)
+						.setPositiveButton("Create",(dialog, which) ->
+						{
+							{
+
+								if (input.getText().toString().isEmpty())
+								{
+
+									return;
+
+								}else
+								{
+
+									toDoTitle.add(input.getText().toString());
+									System.out.println(toDoData);
+									adapter.notifyDataSetChanged();
+									custadapter.notifyDataSetChanged();
+
+								}
+
+
+							}
+						}).show();
+
+
+		});
+
 
 
 	}
@@ -137,7 +211,7 @@ public class ToDoList extends AppCompatActivity implements OnAdapterItemClickLis
 
 
 
-			/**
+			/*
 			CardView folderCard = new CardView(this);
 
 			folderCard.setMinimumWidth((int) dptopx(100));
@@ -156,7 +230,7 @@ public class ToDoList extends AppCompatActivity implements OnAdapterItemClickLis
 			folderCard.addView(playCardText);
 			folderCard.setLayoutParams(RowLayout);
 			folderCard.setOnClickListener(v -> changeActivity());
-			**/
+			*/
 
 
 	}

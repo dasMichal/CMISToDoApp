@@ -44,20 +44,34 @@
                     android:layout_height="match_parent"
                     android:id="@+id/todoName">
 
+                <CheckBox
+                        android:layout_width="33dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/todocheck_isdone"
+                        android:clickable="true"
+                        android:duplicateParentState="false"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:foregroundGravity="center_vertical|clip_horizontal"
+                        android:layout_weight="0"
+                        android:enabled="true" />
+
                 <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/todoradio_isdone"
-                        android:layout_weight="0" />
+                        android:layout_weight="0"
+                        android:visibility="gone"
+                        tools:visibility="gone" />
 
                 <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
-                        android:text="ToDo1"
                         android:ems="10"
                         android:id="@+id/todoNameTextField"
-                        android:layout_weight="0" />
+                        android:layout_weight="0"
+                        android:enabled="true" />
 
             </LinearLayout>
 
@@ -65,63 +79,8 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:id="@+id/SubTaskLayout">
-
-                <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/Subtask1"
-                        android:visibility="gone"
-                        tools:visibility="gone">
-
-                    <ImageButton
-                            android:src="@drawable/ic_baseline_add_24"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/imageButton2"
-                            android:backgroundTint="#FFFFFF"
-                            android:layout_weight="0" />
-
-                    <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="textPersonName"
-                            android:text="subtask1"
-                            android:ems="10"
-                            android:id="@+id/subTask1"
-                            android:layout_gravity="center"
-                            android:layout_weight="2" />
-                </LinearLayout>
-
-                <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:visibility="gone"
-                        android:visibility="gone">
-
-                    <ImageButton
-                            android:src="@drawable/ic_baseline_add_24"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/imageButton2"
-                            android:backgroundTint="#FFFFFF"
-                            android:layout_weight="0" />
-
-                    <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="textPersonName"
-                            android:text="subtask2"
-                            android:ems="10"
-                            android:id="@+id/subTask1"
-                            android:layout_gravity="center"
-                            android:layout_weight="2" />
-                </LinearLayout>
-
-            </LinearLayout>
+                    android:id="@+id/SubTaskLayout"
+                    android:layout_marginStart="20dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -156,7 +115,7 @@
                         android:src="@drawable/ic_baseline_access_time_24"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:id="@+id/imageView"
+                        android:id="@+id/ReminderIcon"
                         android:layout_weight="0"
                         tools:srcCompat="@drawable/ic_baseline_access_time_24" />
 
@@ -168,7 +127,9 @@
                         android:textAlignment="gravity"
                         android:gravity="center"
                         android:hint="Reminder"
-                        android:autoSizeTextType="none" />
+                        android:autoSizeTextType="none"
+                        tools:text="@string/reminder_with_time"
+                        android:textSize="18sp" />
             </LinearLayout>
 
             <View
@@ -189,7 +150,7 @@
                         android:src="@drawable/ic_baseline_access_time_24"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:id="@+id/imageView"
+                        android:id="@+id/DueIcon"
                         android:layout_weight="0"
                         tools:srcCompat="@drawable/ic_baseline_add_alert_24" />
 
@@ -201,7 +162,9 @@
                         android:textAlignment="gravity"
                         android:gravity="center"
                         android:hint="Due"
-                        android:autoSizeTextType="none" />
+                        android:autoSizeTextType="none"
+                        tools:text="@string/due_with_time"
+                        android:textSize="18sp" />
             </LinearLayout>
 
             <View
@@ -222,7 +185,7 @@
                         android:src="@drawable/ic_baseline_access_time_24"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:id="@+id/imageView"
+                        android:id="@+id/LocationIcon"
                         android:layout_weight="0"
                         tools:srcCompat="@drawable/ic_baseline_location_on_24" />
 
@@ -234,7 +197,8 @@
                         android:textAlignment="gravity"
                         android:gravity="center"
                         android:hint="Location"
-                        android:autoSizeTextType="none" />
+                        android:autoSizeTextType="none"
+                        android:textSize="18sp" />
             </LinearLayout>
         </LinearLayout>
 

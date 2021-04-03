@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -12,7 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -24,9 +28,12 @@ public class FolderSelectActivity extends AppCompatActivity
 
 
 	List<Integer> ranNumbers = new ArrayList<>();
+	List<String> data2 = new ArrayList<>();
 	TableRow tr;
 	DrawerLayout menue1;
 	Toolbar toolbar1;
+	RecyclerView recyclerView;
+	FolderAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -35,30 +42,86 @@ public class FolderSelectActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.design_folder_select_activity);
 
+		recyclerView = findViewById(R.id.folderHolder);
+
+		adapter = new FolderAdapter(data2, new FolderAdapter.OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(Integer item)
+			{ }
+
+			public void test(View v)
+			{ }
+
+		});
+
+		recyclerView.setAdapter(adapter);
+		//recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+
+
+
 		FloatingActionButton fab = findViewById(R.id.FAB_createFolder);
 		fab.setOnClickListener(view -> {
 
-			Snackbar.make(view, "Folders Created", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-			ranNumbers.add(1);
-			ranNumbers.add(2);
-			ranNumbers.add(3);
-			ranNumbers.add(4);
-			createGameField(ranNumbers,4,2.0);
+			createFolder(view);
 
 		});
 
 		toolbar1 = findViewById(R.id.toolbar1);
 		menue1 = findViewById(R.id.drawerLayout);
-		//menue1.close();
+
+
+
 		toolbar1.setNavigationOnClickListener(v ->
 		{
-
 			menue1.open();
-
 		});
 
 
 	}
+
+
+
+	private void createFolder(View view)
+	{
+
+		final EditText input = new EditText(this);
+		input.setSingleLine(true);
+		new MaterialAlertDialogBuilder(this)
+				.setTitle("Name of your Folder")
+				//.setMessage("")
+				.setCancelable(true)
+				.setView(input)
+				.setPositiveButton("Create",(dialog, which) ->
+				{
+					{
+
+						if (input.getText().toString().isEmpty())
+						{
+
+							return;
+
+						}else
+						{
+
+							data2.add(input.getText().toString());
+							System.out.println(data2);
+							adapter.notifyDataSetChanged();
+							Snackbar.make(view, "Folder Created", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+						}
+
+					}
+				}).show();
+
+
+
+
+	}
+
+
+
 
 
 	private void createGameField(List<Integer> ranNumbers, int numberFields, double average)
