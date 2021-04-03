@@ -97,7 +97,7 @@ public class ToDoList extends AppCompatActivity
 						//.setMessage("")
 						.setCancelable(true)
 						.setView(input)
-						.setPositiveButton("Okay",(dialog, which) ->
+						.setPositiveButton("Create",(dialog, which) ->
 						{
 							{
 
@@ -112,22 +112,13 @@ public class ToDoList extends AppCompatActivity
 									toDoTitle.add(input.getText().toString());
 									System.out.println(toDoData);
 									adapter.notifyDataSetChanged();
+									custadapter.notifyDataSetChanged();
 
 								}
 
 
-
-
 							}
 						}).show();
-
-
-
-
-
-
-
-
 
 
 		});
