@@ -116,36 +116,34 @@ public class TestRecycle extends RecyclerView.Adapter<TestRecycle.ViewHolder>
 
 		public void bind(String integer, OnItemClickListener listener)
 		{
-			ToDoChecked.setOnClickListener(new View.OnClickListener() {
-				@Override public void onClick(View v)
+			ToDoChecked.setOnClickListener(v -> {
+				if (ToDoChecked.isChecked())
 				{
-					if (ToDoChecked.isChecked())
-					{
 
 
-						System.out.println(data);
-						//System.out.println(getLayoutPosition());
-						System.out.println(data.get(getLayoutPosition()));
-						//System.out.println(data.get(getAdapterPosition()));
-						System.out.println(ToDoChecked.isChecked());
+					System.out.println(data);
+					//System.out.println(getLayoutPosition());
+					System.out.println(data.get(getLayoutPosition()));
+					//System.out.println(data.get(getAdapterPosition()));
+					System.out.println(ToDoChecked.isChecked());
 
-						//listener.onItemClick(integer);
+					//listener.onItemClick(integer);
 
-						int curSize = getItemCount();
+					int curSize = getItemCount();
 
 
 
 
-						Toast.makeText(v.getContext(), " "+integer.toString(), Toast.LENGTH_SHORT).show();
+					Toast.makeText(v.getContext(), " "+integer.toString(), Toast.LENGTH_SHORT).show();
 
 
 
-					} else
-					{
+				} else
+				{
 
-						System.out.println(ToDoChecked.isChecked());
+					System.out.println(ToDoChecked.isChecked());
 
-					}
+				}
 
 
 
