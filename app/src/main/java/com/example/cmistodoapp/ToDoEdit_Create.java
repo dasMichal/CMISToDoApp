@@ -6,10 +6,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -22,13 +22,13 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
-import java.util.Calendar;
-import java.util.Locale;
-
-import static java.util.TimeZone.getDefault;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 
 
 public class ToDoEdit_Create extends AppCompatActivity
@@ -47,11 +47,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 	String ToDoTitle;
 	int toDoID;
 
-	int hour = 0;
-	int minute = 0;
-	int year;
-	int month;
-	int dayofmonth;
+
+	ZonedDateTime currentTime;
 
 	AlarmManager alarmMgr;
 	PendingIntent alarmIntent;
@@ -73,6 +70,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 		logic();
 		newSubText(subTaskLayout.getChildCount());
 
+		/*
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
 				.setSmallIcon(R.drawable.ic_baseline_location_on_24)
 				.setContentTitle("Send Help")
@@ -81,24 +79,15 @@ public class ToDoEdit_Create extends AppCompatActivity
 				.setCategory(NotificationCompat.CATEGORY_MESSAGE)
 				.setAllowSystemGeneratedContextualActions(true)
 				.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-
+		*/
 
 
 		createNotificationChannel();
-		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-	// notificationId is a unique int for each notification that you must define
-		notificationManager.notify(420, builder.build());
+		//NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-
-
-		alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(this, FolderSelectActivity.class);
-		alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-
-
+		// notificationId is a unique int for each notification that you must define
+		//notificationManager.notify(420, builder.build());
 
 
 
@@ -122,9 +111,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 		toolbar = findViewById(R.id.toolbar2);
 		toolbar.setTitle(ToDoTitle);
 		todoNameTextField.setText(ToDoTitle);
-
-
-
 
 	}
 
@@ -155,37 +141,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 	public void logic()
 	{
 
-		/*
-		todoNameTextField.addTextChangedListener(new TextWatcher()
-		{
-
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after)
-			{
-
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count)
-			{
-				if (todoNameTextField.getText().length() != 0)
-				{
-					System.out.println(todoNameTextField.getText().toString());
-				}else System.out.println("Empty TextField");
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable s)
-			{
-
-			}
-		});
-
-		*/
-
-
+		//Setting On Click Listener
 		toolbar.setNavigationOnClickListener(v ->
 		{
 
@@ -198,8 +154,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 			finish();
 			startActivityIfNeeded(intent, 0);
 
-
-
 		});
 
 
@@ -207,7 +161,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 		todo_reminderText.setOnClickListener(v ->
 		{
 			getTime();
-			showTimePicker(v,0);
+			showTimePicker(v,0);        //Starts The Time and Date Picker
 
 		});
 
@@ -215,25 +169,19 @@ public class ToDoEdit_Create extends AppCompatActivity
 		todo_reminderDue.setOnClickListener(v ->
 		{
 			getTime();
-			showTimePicker(v,1);
-
+			showTimePicker(v,1); //Starts The Time and Date Picker
 		});
 
 
-		//System.out.println(subTaskLayout.getChildCount());
-		//NavHostFragment navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host);
-		//navHostFragment.getChildFragmentManager().getFragments().get(0);
-
-
-
+		/*
 		Calendar calendar = Calendar.getInstance(Locale.GERMANY);
 		calendar.setTimeZone(getDefault());
 
-
-		//calendar.setTime(new SimpleDateFormat().parse("dd-MM-yyyy"));
-		//calendar.setTime(new SimpleDateFormat( Locale.GERMAN);
-		//Calendar.getInstance(Locale.GERMANY);
-		//System.out.println();
+		calendar.setTime(new SimpleDateFormat().parse("dd-MM-yyyy"));
+		calendar.setTime(new SimpleDateFormat( Locale.GERMAN);
+		Calendar.getInstance(Locale.GERMANY);
+		System.out.println();
+		 */
 
 		/*
 		MaterialTimePicker.Builder MatTimePicker = new MaterialTimePicker.Builder();
@@ -250,26 +198,19 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 	}
 
+	/**
+	 * Gets the Current Time
+	 */
 	private void getTime()
 	{
+		//Getting the Current Time using the Java 8 Date Time API
+		currentTime = ZonedDateTime.now();
 
-
-		//Calendar calendar = Calendar.getInstance(Locale.GERMANY);
-		Calendar calendar = Calendar.getInstance(Locale.getDefault());
-		calendar.setTimeZone(getDefault());
-		hour = calendar.get(Calendar.HOUR_OF_DAY);
-		minute = calendar.get(Calendar.MINUTE);
-		year = calendar.get(Calendar.YEAR);
-		month = calendar.get(Calendar.MONTH)+1;
-		dayofmonth = calendar.get(Calendar.DAY_OF_MONTH);
-
-		System.out.println("Stunde "+hour);
-		System.out.println("Minute "+ minute);
-
-		System.out.println("tag: "+dayofmonth);
-		System.out.println("Monat: "+month);
-		System.out.println("Jahr: "+year);
-
+		System.out.println("Stunde "+currentTime.getHour());
+		System.out.println("Minute "+ currentTime.getMinute());
+		System.out.println("tag: "+ currentTime.getDayOfMonth());
+		System.out.println("Monat: "+ currentTime.getMonth());
+		System.out.println("Jahr: "+ currentTime.getYear());
 
 	}
 
@@ -278,72 +219,64 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 	private void showTimePicker(View textView, int whatTextView)
 	{
-
+		//Second
 		TimePickerDialog.OnTimeSetListener TimeSetListener = new TimePickerDialog.OnTimeSetListener()
 		{
 			@Override
 			public void onTimeSet(TimePicker view, int hourOfDay, int minute)
 			{
-				System.out.println("Time Set succesfull");
-				//todo_reminderText.setText(" "+hourOfDay+" "+minute);
-				showDatePicker(textView,whatTextView,hourOfDay,minute);
-
+				Log.d("TimePicker","Time set successful");
+				showDatePicker(textView,whatTextView,hourOfDay,minute); //Starts the DatePicker Dialog right after
 			}
-
 		};
 
-
-		timePickerDialog = new TimePickerDialog(this,TimeSetListener,hour,minute,true);
-
-		timePickerDialog.show();
-
+		//First
+		timePickerDialog = new TimePickerDialog(this,TimeSetListener,currentTime.getHour(), currentTime.getMinute(),true); //Creates the TimePicker Dialog
+		timePickerDialog.show();        //Shows the TimePicker Dialog
 	}
 
 
 
 	private void showDatePicker(View textView, int whatTextView, int hourOfDay, int minute)
 	{
-
+		//Second
 		DatePickerDialog.OnDateSetListener DataSetListener = new DatePickerDialog.OnDateSetListener()
 		{
+
 			@Override
 			public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
 			{
 
-				System.out.println("Data Set succesfull");
-				//todo_reminderText.setText(" "+hourOfDay+" "+minute);
 
+				Log.d("DatePicker","Data Set successful");
 
-				Calendar myDate = Calendar.getInstance(Locale.getDefault());
-				myDate.setTimeZone(getDefault());
-				myDate.set(year,month,dayOfMonth,hourOfDay,minute);
-				System.out.println(myDate.getTime());
 				TextView text = (TextView) textView;
 
-
-
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTimeInMillis(System.currentTimeMillis());
-				//calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-				//calendar.set(Calendar.MINUTE,minute);
-				calendar.set(year,month,dayOfMonth,hourOfDay,minute);
-
-
-				// With setInexactRepeating(), you have to use one of the AlarmManager interval
-				// constants--in this case, AlarmManager.INTERVAL_DAY.
-				alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-						AlarmManager.INTERVAL_DAY, alarmIntent);
+				//Creates a Data Object to pass Data to the WorkManager
+				Data datePackData = new Data.Builder()           //Very Smart name, I know.  Don't @ me
+						.putInt("minute", minute)
+						.putInt("hourOfDay", hourOfDay)
+						.putInt("dayOfMonth", dayOfMonth)
+						.putInt("month", month)
+						.putInt("year", year)
+						.build();
 
 
 
 
+				/*
+				Switch Case to change the respective TextView that was selected and called the  Time and DatePicker.
+				Indicator is the whatTextView int
+				*/
 				switch(whatTextView)
 				{
 					case 0:
 						text.setText(getResources().getString(R.string.reminder_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
+						notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
 						break;
 					case 1:
 						text.setText(getResources().getString(R.string.due_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
+						notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
 						break;
 					default:
 						System.out.println("Should not Happen");
@@ -358,9 +291,41 @@ public class ToDoEdit_Create extends AppCompatActivity
 		};
 
 
-		datePickerDialog = new DatePickerDialog(this,DataSetListener,year,month,dayofmonth);
+		//First
+		datePickerDialog = new DatePickerDialog(this,DataSetListener, currentTime.getYear(), currentTime.getMonthValue(), currentTime.getDayOfMonth()); //Creates the DatePicker Dialog
+		datePickerDialog.show(); //Shows the DatePicker Dialog
+	}
 
-		datePickerDialog.show();
+
+
+
+	private void notificationPlaner( Data DatePackData,int year, int month, int dayOfMonth, int hourOfDay, int minute)
+	{
+		//saving the Time the USer has selected in a ZonedDateTime variable
+		ZonedDateTime selectedTime = ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone());
+
+		getTime(); //Grabbing the current Time
+		//Calculate the Duration between the current Time and the User selected Time
+		Duration delayToNotification = Duration.between(currentTime,selectedTime); //calculating the "Distance" between the two Dates
+
+		System.out.println("Duration "+delayToNotification);
+		Log.d("Time Duration", String.valueOf(delayToNotification));
+
+
+		//Creating a WorkRequest
+		WorkRequest notificationScheduleRequest =
+				new OneTimeWorkRequest.Builder(NotificationWorker.class)
+						.setInitialDelay(delayToNotification)  //Setting the delay to the Value that was calculated before
+						.setInputData(DatePackData)             //Passing Data to the WorkManager
+						.addTag("TestRequest")                  //Adding a tag to keep track of this WorkRequest
+						.build();                               //Build the request
+
+
+		//Submitting the WorkRequest to the system
+		WorkManager
+				.getInstance(ToDoEdit_Create.this)
+				.enqueue(notificationScheduleRequest);
+
 
 	}
 
@@ -410,19 +375,10 @@ public class ToDoEdit_Create extends AppCompatActivity
 				newSubText.setEnabled(false);
 			} else
 			{
-
 				newSubText.setEnabled(true);
 				System.out.println(subTaskCheckbox.isChecked());
 
-
-
 			}
-
-
-
-
-
-
 
 		});
 
