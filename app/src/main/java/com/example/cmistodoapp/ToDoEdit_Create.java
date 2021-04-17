@@ -263,7 +263,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 
-
 				/*
 				Switch Case to change the respective TextView that was selected and called the  Time and DatePicker.
 				Indicator is the whatTextView int
@@ -279,7 +278,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 						notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
 						break;
 					default:
-						System.out.println("Should not Happen");
+						Log.wtf("Ballistic descent mode", "This Should definitely not happen (Error in whatTextView switch Case");
 						break;
 
 
@@ -326,16 +325,22 @@ public class ToDoEdit_Create extends AppCompatActivity
 				.getInstance(ToDoEdit_Create.this)
 				.enqueue(notificationScheduleRequest);
 
+		Log.i("WorkManager","Notification scheduled in "+delayToNotification );
 
 	}
 
 
+	/**
+	 * Creates a new Sub-task TextField under the {@link EditText todoNameTextField}
+	 * @param childCount The current amount of Sub-Task TextFields
+	 */
 	private void newSubText(int childCount)
 	{
 
-		//System.out.println("Child Count: "+childCount);
+
 		LinearLayout.LayoutParams LinParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
+		//Creating and Constructing a new Sub-Task Layout
 		LinearLayout subRow = new LinearLayout(this);
 		subRow.setOrientation(LinearLayout.HORIZONTAL);
 		subRow.setLayoutParams(LinParam);
@@ -351,40 +356,28 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 		EditText newSubText = new EditText(this);
-		//newSubText.setText(""+(childCount+1));
-		newSubText.setHint("Subtask");
+		newSubText.setHint("SubTask");
 		newSubText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 2));
 		newSubText.setSingleLine(true);
 
 
 		subTaskCheckbox.setOnClickListener(v ->
 		{
-
-			/*
-			LinearLayout parent = (LinearLayout) v.getParent().getParent();
-			int index = parent.indexOfChild((View) v.getParent());
-			System.out.println("Index: "+index);
-			LinearLayout subparent = (LinearLayout) v.getParent();
-			 */
-
-
+			//Checks if the Sub-Task Checkbox is toggled and disables/enables the corresponding EditText Fields
 			if (subTaskCheckbox.isChecked())
 			{
-
-				System.out.println(subTaskCheckbox.isChecked());
 				newSubText.setEnabled(false);
 			} else
 			{
 				newSubText.setEnabled(true);
-				System.out.println(subTaskCheckbox.isChecked());
-
 			}
+			Log.d("subTaskCheckbox", String.valueOf(subTaskCheckbox.isChecked()));
 
 		});
 
 
 
-
+		//Listener which Triggers when the Enter Key is being pressed while in one of the newSubText  Fields
 		newSubText.setOnEditorActionListener(new TextView.OnEditorActionListener()
 		{
 
@@ -398,8 +391,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 				//System.out.println(KeyEvent.keyCodeToString(actionId));
 				if (actionId == KeyEvent.KEYCODE_ENDCALL)
 				{
-					//System.out.println("Enter pressed");
-					newSubText.clearFocus();
+					Log.d("KeyEvent","Enter Pressed");
+					newSubText.clearFocus();    //Removes the Focus of the current Sub-Task TextField
 				}
 				return false;
 			}
@@ -408,7 +401,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 		});
 
 
-
+		//Listener which Triggers if one of the newSubText Fields changes focus
 		newSubText.setOnFocusChangeListener(new View.OnFocusChangeListener()
 		{
 			@Override
@@ -417,38 +410,39 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 				if (hasFocus)
 				{
-
+					//If the EditText Field still has Focus the abort
 					return;
-
 				}
 
+				//Reference the Parent LinearLayout to the index of the Full newSubText Fields
 				LinearLayout parent = (LinearLayout) v.getParent().getParent();
 				int index = parent.indexOfChild((View) v.getParent());
-				System.out.println("Index: "+index);
-				int getchildCount = subTaskLayout.getChildCount() ;
-				System.out.println("ChildCount "+getchildCount);
+				Log.d("SubTask Index", String.valueOf(index));
+
+				//Get the number of current newSubText EditText Fields
+				int getchildCount = subTaskLayout.getChildCount();
+				Log.d("SubTask ChildCount", String.valueOf(getchildCount));
+
 				System.out.println(index < getchildCount);
 
 
 
 
 				//if ((!hasFocus) & newSubText.getText().toString().isEmpty() & index != 0 & index+1 < getchildCount ) // code to execute when EditText loses focus and field is empty
+
 				if ((!hasFocus) & newSubText.getText().toString().isEmpty() & index+1 < getchildCount ) // code to execute when EditText loses focus and field is empty
 				{
+					//If newSubText Field is empty and not the only Field then delete itself
+					Log.d("newSubText", "Focus Lost. TextField Empty");
+					Log.d("newSubText","Index Empty: "+index);
 
-					System.out.println("LOSE FOCUS EMPTY");
-					System.out.println(newSubText.getText().toString());
-					//System.out.println(newSubText.getText().length());
-					System.out.println("Index Empty: "+index);
 					subTaskLayout.removeViewAt(index);
 
 				}else if ((!hasFocus) & !newSubText.getText().toString().isEmpty() & index+1 == getchildCount )
 				{
-					System.out.println("LOSE FOCUS Full");
-					System.out.println(newSubText.getText().toString());
-					//System.out.println(newSubText.getText().length());
-
-					System.out.println("Index Full: "+index);
+					//If newSubText Field is full and the only Field then create a new newSubText Field
+					Log.d("newSubText", "Focus Lost. TextField Full");
+					Log.d("newSubText","Index Full: "+index);
 
 					newSubText(subTaskLayout.getChildCount());
 
@@ -457,9 +451,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 			}
 		});
-
-
-
 
 
 		//subRow.addView(addIcon);
