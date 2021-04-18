@@ -210,6 +210,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 		System.out.println("Minute "+ currentTime.getMinute());
 		System.out.println("tag: "+ currentTime.getDayOfMonth());
 		System.out.println("Monat: "+ currentTime.getMonth());
+		System.out.println("Monat Value: "+ currentTime.getMonthValue());
 		System.out.println("Jahr: "+ currentTime.getYear());
 
 	}
@@ -291,7 +292,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 		//First
-		datePickerDialog = new DatePickerDialog(this,DataSetListener, currentTime.getYear(), currentTime.getMonthValue(), currentTime.getDayOfMonth()); //Creates the DatePicker Dialog
+		datePickerDialog = new DatePickerDialog(this,DataSetListener, currentTime.getYear(), (currentTime.getMonthValue() -1), currentTime.getDayOfMonth()); //Creates the DatePicker Dialog
 		datePickerDialog.show(); //Shows the DatePicker Dialog
 	}
 
