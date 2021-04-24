@@ -1,4 +1,4 @@
-package com.example.cmistodoapp;
+package com.example.cmistodoapp.persistency;
 
 
 import androidx.room.ColumnInfo;
@@ -8,14 +8,22 @@ import androidx.room.PrimaryKey;
 import org.jetbrains.annotations.NotNull;
 
 @Entity(tableName = "ToDo_table")
-public class ToDo
+public class ToDo_Entity
 {
+
+	public ToDo_Entity()
+	{
+		//this.ToDoID = 0;
+		this.ToDoName = "name";
+		this.isDone = false;
+
+	}
 
 	@NotNull
 	@ColumnInfo(name= "ToDo_Name")
 	private String ToDoName;
 
-	@PrimaryKey
+	@PrimaryKey(autoGenerate = true)
 	@ColumnInfo(name= "ToDo_ID")
 	private int ToDoID;
 
@@ -23,19 +31,26 @@ public class ToDo
 	@ColumnInfo(name= "ToDo_IsDone")
 	private boolean isDone;
 
+	@ColumnInfo(name= "FK_FolderID")
+	private int FKFolderID;
 
-	public ToDo(int toDoID, @NotNull String toDoName,  boolean isDone)
+
+
+
+	public int getFKFolderID()
 	{
-		this.ToDoID = toDoID;
-		this.ToDoName = toDoName;
-		this.isDone = isDone;
+		return FKFolderID;
 	}
 
+	public void setFKFolderID(int FKFolderID)
+	{
+		this.FKFolderID = FKFolderID;
+	}
 
 	@NotNull
 	public String getToDoName()
 	{
-		return ToDoName;
+		return this.ToDoName;
 	}
 
 	public void setToDoName(@NotNull String toDoName)
@@ -45,7 +60,7 @@ public class ToDo
 
 	public int getToDoID()
 	{
-		return ToDoID;
+		return this.ToDoID;
 	}
 
 	public void setToDoID(int toDoID)
@@ -55,11 +70,15 @@ public class ToDo
 
 	public boolean isDone()
 	{
-		return isDone;
+		return this.isDone;
 	}
 
 	public void setDone(boolean done)
 	{
 		isDone = done;
 	}
+
+
 }
+
+

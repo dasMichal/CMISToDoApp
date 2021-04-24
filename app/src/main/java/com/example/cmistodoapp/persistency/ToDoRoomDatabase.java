@@ -1,4 +1,4 @@
-package com.example.cmistodoapp;
+package com.example.cmistodoapp.persistency;
 
 
 import android.content.Context;
@@ -12,11 +12,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {ToDo.class}, version = 1, exportSchema = false)
-abstract class ToDoRoomDatabase extends RoomDatabase
+@Database(entities = {ToDo_Entity.class, ToDoFolder_Entity.class}, version = 1, exportSchema = false)
+public abstract class ToDoRoomDatabase extends RoomDatabase
 {
 
-	abstract ToDo_DAO toDo_dao();
+	public abstract ToDo_DAO DAO();
 
 	// marking the instance as volatile to ensure atomic access to the variable
 	private static volatile ToDoRoomDatabase INSTANCE;
@@ -31,6 +31,7 @@ abstract class ToDoRoomDatabase extends RoomDatabase
 					INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
 							ToDoRoomDatabase.class, "ToDo_db")
 							.addCallback(sRoomDatabaseCallback)
+							.fallbackToDestructiveMigration()
 							.build();
 				}
 			}
@@ -47,18 +48,16 @@ abstract class ToDoRoomDatabase extends RoomDatabase
 			databaseWriteExecutor.execute(() -> {
 				// Populate the database in the background.
 				// If you want to start with more words, just add them.
-				ToDo toDo;
+				ToDo_Entity toDoEntity;
 
-				ToDo_DAO dao = INSTANCE.toDo_dao();
+				ToDo_DAO dao = INSTANCE.DAO();
+
 				dao.nukeTable();
-
-				toDo = new ToDo(1,"Test123",false);
-				dao.insert(toDo);
-				toDo = new ToDo(2,"Test2",false);
-				dao.insert(toDo);
 
 
 			});
+
+
 		}
 	};
 
