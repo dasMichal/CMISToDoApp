@@ -1,4 +1,4 @@
-package com.example.cmistodoapp;
+package com.example.cmistodoapp.WorkManager;
 
 import android.content.Context;
 
@@ -7,6 +7,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+
+import com.example.cmistodoapp.R;
+
+import org.jetbrains.annotations.NotNull;
 
 public class NotificationWorker extends Worker
 {
@@ -17,6 +21,7 @@ public class NotificationWorker extends Worker
 	}
 
 
+	@NotNull
 	@Override
 	public Result doWork() {
 
@@ -41,9 +46,6 @@ public class NotificationWorker extends Worker
 				.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
 		NotificationManagerCompat.from(getApplicationContext()).notify(420,builder.build());
-
-
-
 
 
 		// Indicate whether the work finished successfully with the Result
