@@ -1,7 +1,9 @@
 package com.example.cmistodoapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -13,9 +15,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cmistodoapp.adapter.FolderAdapter;
+import com.example.cmistodoapp.persistency.ToDoFolder_Entity;
+import com.example.cmistodoapp.persistency.ToDoViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -34,7 +40,8 @@ public class FolderSelectActivity extends AppCompatActivity
 	Toolbar toolbar1;
 	RecyclerView recyclerView;
 	FolderAdapter adapter;
-
+	ToDoViewModel viewModel;
+	FloatingActionButton fab;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -42,35 +49,49 @@ public class FolderSelectActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.design_folder_select_activity);
 
-		recyclerView = findViewById(R.id.folderHolder);
+		init();
 
-		adapter = new FolderAdapter(data2, new FolderAdapter.OnItemClickListener()
+		viewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
+		viewModel.getAllFolders().observe(this,folder ->
 		{
-			@Override
-			public void onItemClick(Integer item)
-			{ }
 
-			public void test(View v)
-			{ }
+			Log.d("OnChange Object", "Folder on change");
+
+			adapter = new FolderAdapter(folder, new FolderAdapter.OnItemClickListener()
+			{
+
+				@Override
+				public void onFolderClick(int id, Context localContext)
+				{
+					Intent intent = new Intent(localContext, ToDoList.class);
+					//intent.putExtra("selectedFolder", folder.get(id).getFolderName());
+					intent.putExtra("folderID",id);
+					localContext.startActivity(intent);
+				}
+
+
+
+			});
+
+			recyclerView.setAdapter(adapter);
+			recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+
+
 
 		});
 
-		recyclerView.setAdapter(adapter);
-		//recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		recyclerView.setLayoutManager(new GridLayoutManager(this,2));
 
 
 
-		FloatingActionButton fab = findViewById(R.id.FAB_createFolder);
-		fab.setOnClickListener(view -> {
+		logic();
 
-			createFolder(view);
 
-		});
+	}
 
-		toolbar1 = findViewById(R.id.toolbar1);
-		menue1 = findViewById(R.id.drawerLayout);
+	private void logic()
+	{
 
+		fab.setOnClickListener(this::createFolder);
 
 
 		toolbar1.setNavigationOnClickListener(v ->
@@ -79,8 +100,17 @@ public class FolderSelectActivity extends AppCompatActivity
 		});
 
 
+
 	}
 
+
+	private void init()
+	{
+		fab = findViewById(R.id.FAB_createFolder);
+		toolbar1 = findViewById(R.id.toolbar1);
+		menue1 = findViewById(R.id.drawerLayout);
+		recyclerView = findViewById(R.id.folderHolder);
+	}
 
 
 	private void createFolder(View view)
@@ -97,18 +127,20 @@ public class FolderSelectActivity extends AppCompatActivity
 				{
 					{
 
-						if (input.getText().toString().isEmpty())
+						if (!input.getText().toString().isEmpty())
+						{
+
+							ToDoFolder_Entity newFolder = new ToDoFolder_Entity();
+							newFolder.setFolderName(input.getText().toString());
+							viewModel.insertFolder(newFolder);
+
+							adapter.notifyDataSetChanged();
+							Snackbar.make(view, "Folder Created", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+						} else
 						{
 
 							return;
-
-						}else
-						{
-
-							data2.add(input.getText().toString());
-							System.out.println(data2);
-							adapter.notifyDataSetChanged();
-							Snackbar.make(view, "Folder Created", Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
 						}
 
