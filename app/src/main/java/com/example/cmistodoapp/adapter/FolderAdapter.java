@@ -1,7 +1,6 @@
-package com.example.cmistodoapp;
+package com.example.cmistodoapp.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cmistodoapp.R;
+import com.example.cmistodoapp.persistency.ToDoFolder_Entity;
+
 import java.util.List;
 
 
@@ -19,21 +21,19 @@ import java.util.List;
 
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder>
 {
-	private final List<String> data;
+	private final List<ToDoFolder_Entity> folderData;
 	private final OnItemClickListener listener;
-	private int selectedPos = RecyclerView.NO_POSITION;
-	private int countFlipped = 0;
 
-	public FolderAdapter(List<String> generateData, OnItemClickListener listener)
+
+	public FolderAdapter(List<ToDoFolder_Entity> folderliveData, OnItemClickListener listener)
 	{
-		this.data = generateData;
+		this.folderData = folderliveData;
 		this.listener = listener;
 	}
 
 	public interface OnItemClickListener
 	{
-		void onItemClick(Integer item);
-		void test(View v);
+		void onFolderClick(int id, Context context);
 
 	}
 
@@ -52,10 +52,16 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 	public void onBindViewHolder(FolderAdapter.ViewHolder holder, int position)
 	{
 
-		holder.folderText.setText(" "+this.data.get(position));
+		holder.folderText.setText(this.folderData.get(position).getFolderName());
+		holder.folderCard.setId(this.folderData.get(position).getFolderID());
 
-		holder.folderCard.setId(this.data.size());
-		holder.folderCard.setTag(" "+this.data.get(position));
+		holder.folderCard.setTag(this.folderData.get(position).getFolderID());
+
+
+		//holder.folderText.setText(" "+this.folderData.get(position));
+
+		//holder.folderCard.setId(this.folderData.size());
+		holder.folderCard.setTag(" "+this.folderData.get(position));
 
 		//holder.bind(data.get(position), listener);
 
@@ -67,7 +73,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 	@Override
 	public int getItemCount()
 	{
-		return this.data.size();
+		return this.folderData.size();
 	}
 
 
@@ -84,26 +90,17 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 			this.folderCard = view.findViewById(R.id.folderCard);
 
 
+
 			folderCard.setOnClickListener(v ->
 			{
-
 
 				Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.folderText.getText(), Toast.LENGTH_SHORT).show();
 
 				System.out.println("Click");
 				Context context = view.getContext();
-				Intent intent = new Intent(context, ToDoList.class);
-				intent.putExtra("selectedFolder", folderText.getText());
-
-				context.startActivity(intent);
-
-
-
-
-
+				listener.onFolderClick(folderCard.getId(),context);
 
 			});
-
 
 
 
@@ -119,33 +116,19 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 		public void onClick(View view)
 		{
 
-
-
-
 			Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.folderText.getText(), Toast.LENGTH_SHORT).show();
 
-			System.out.println("Click");
 			Context context = view.getContext();
-			Intent intent = new Intent(context, ToDoList.class);
-			intent.putExtra("selectedFolder", folderText.getText());
 
-			context.startActivity(intent);
+			listener.onFolderClick(folderCard.getId(),context);
 
-
-
-		}
-
-
-		/*
-		public void bind(String integer, OnItemClickListener listener )
-		{
 
 
 
 
 		}
 
-		 */
+
 	}
 
 
