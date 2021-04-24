@@ -1,10 +1,8 @@
 package com.example.cmistodoapp;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -70,26 +68,18 @@ public class ToDoEdit_Create extends AppCompatActivity
 		logic();
 		newSubText(subTaskLayout.getChildCount());
 
-		/*
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-				.setSmallIcon(R.drawable.ic_baseline_location_on_24)
-				.setContentTitle("Send Help")
-				.setContentText("How to Schedule a notification Josh/Marcus ? ")
-				.setChannelId(CHANNEL_ID)
-				.setCategory(NotificationCompat.CATEGORY_MESSAGE)
-				.setAllowSystemGeneratedContextualActions(true)
-				.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-		*/
-
-
 		createNotificationChannel();
 
-		//NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-		// notificationId is a unique int for each notification that you must define
-		//notificationManager.notify(420, builder.build());
+	}
 
 
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		newtoDoEntityObject.setToDoName(todoNameTextField.getText().toString());
+		newtoDoEntityObject.setDone(IsDone.isChecked());
+		viewModel.updateDataset(newtoDoEntityObject);
 
 	}
 
@@ -458,20 +448,12 @@ public class ToDoEdit_Create extends AppCompatActivity
 		subRow.addView(newSubText);
 		subTaskLayout.addView(subRow);
 
-
-
-
-
-
 	}
-
-
 
 	public float dptopx(float dp)
 	{
 		return dp * getResources().getDisplayMetrics().density;
 	}
-
 
 
 }
