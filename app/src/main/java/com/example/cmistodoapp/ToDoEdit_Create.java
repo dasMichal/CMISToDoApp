@@ -20,16 +20,25 @@ import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import com.example.cmistodoapp.WorkManager.NotificationWorker;
+import com.example.cmistodoapp.databinding.ActivityMain2Binding;
+import com.example.cmistodoapp.persistency.ToDo_Entity;
+import com.example.cmistodoapp.persistency.ToDoViewModel;
+
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
 
-public class ToDoEdit_Create extends AppCompatActivity
+public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 {
 
 	private static final String CHANNEL_ID = "Seven" ;
@@ -44,12 +53,10 @@ public class ToDoEdit_Create extends AppCompatActivity
 	DatePickerDialog datePickerDialog;
 	String ToDoTitle;
 	int toDoID;
-
-
+	ToDoViewModel viewModel;
+	MutableLiveData<String> ToDoTitleLive;
 	ZonedDateTime currentTime;
-
-	AlarmManager alarmMgr;
-	PendingIntent alarmIntent;
+	ToDo_Entity newtoDoEntityObject;
 
 
 	@Override
@@ -58,13 +65,65 @@ public class ToDoEdit_Create extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main2);
 
-		Intent in = getIntent();
+		ActivityMain2Binding binding = DataBindingUtil.setContentView(this,R.layout.activity_main2);
+		binding.setLifecycleOwner(this);
+		viewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
 
-		ToDoTitle = in.getStringExtra("toDoTitle");
+		Intent in = getIntent();
 		toDoID = in.getIntExtra("toDoID",0);
-		System.out.println(toDoID);
+
 
 		init();
+
+		viewModel.getTODOObjectByID(toDoID).observe(this,v ->
+		{
+
+			Log.d("OnChange Object", "TADA");
+			System.out.println(v.getToDoName());
+			toolbar.setTitle(v.getToDoName());
+			todoNameTextField.setText(v.getToDoName());
+			IsDone.setChecked(v.isDone());
+
+			newtoDoEntityObject.setToDoID(v.getToDoID());
+			newtoDoEntityObject.setToDoName(v.getToDoName());
+			newtoDoEntityObject.setDone(v.isDone());
+		});
+
+
+
+
+
+
+		viewModel.getTODOObjectByID(toDoID);
+
+		/*
+		viewModel.setFilter(toDoID);
+
+		viewModel.getSearchBy().observe(this, new Observer<List<ToDo_Entity>>()
+		{
+			@Override
+			public void onChanged(List<ToDo_Entity> toDos)
+			{
+				Log.d("OnChange FIlterS", String.valueOf(toDos));
+				System.out.println(toDos.size());
+				for (ToDo_Entity tmp:toDos)
+				{
+					System.out.println(tmp);
+				}
+
+			}
+		});
+
+
+		viewModel.setFilter(toDoID);
+		viewModel.getSearchBy();
+
+
+		 */
+
+
+
+
 		logic();
 		newSubText(subTaskLayout.getChildCount());
 
@@ -91,9 +150,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 	private void init()         //Assign all the Objects in one Place
 	{
 
-
+		newtoDoEntityObject = new ToDo_Entity();
 		todoNameTextField = findViewById(R.id.todoNameTextField);
-		//subTask1 = findViewById(R.id.subTask1);
 		IsDone = findViewById(R.id.todocheck_isdone);
 		subTaskLayout = findViewById(R.id.SubTaskLayout);
 		todo_reminderText = findViewById(R.id.todo_reminderText);
@@ -106,7 +164,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 
-	private void createNotificationChannel() {
+	private void createNotificationChannel()
+	{
 		// Create the NotificationChannel, but only on API 26+ because
 		// the NotificationChannel class is new and not in the support library
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -131,10 +190,35 @@ public class ToDoEdit_Create extends AppCompatActivity
 	public void logic()
 	{
 
+
+		todoNameTextField.setOnEditorActionListener(new TextView.OnEditorActionListener()
+		{
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+			{
+
+
+				if (actionId == KeyEvent.KEYCODE_CALL)
+				{
+					Log.d("KeyEvent","Enter Pressed");
+					newtoDoEntityObject.setToDoName(todoNameTextField.getText().toString());
+					viewModel.updateDataset(newtoDoEntityObject);
+				}
+				return false;
+			}
+
+
+		});
+
+
+
+
+
+
 		//Setting On Click Listener
 		toolbar.setNavigationOnClickListener(v ->
 		{
-
 
 			Intent intent = new Intent(ToDoEdit_Create.this, ToDoList.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
