@@ -2,6 +2,7 @@ package com.example.cmistodoapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cmistodoapp.adapter.ToDoListAdapter;
+import com.example.cmistodoapp.persistency.ToDoFolder_Entity;
+import com.example.cmistodoapp.persistency.ToDoViewModel;
+import com.example.cmistodoapp.persistency.ToDo_Entity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -28,16 +34,17 @@ import java.util.List;
 public class ToDoList extends AppCompatActivity
 {
 
-	List<String> data2 = new ArrayList<>();
+	public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
 	Toolbar toolbar;
-	TestRecycle adapter;
-	TestRecycle custadapter;
+	ToDoListAdapter adapter;
 	FloatingActionButton fabToDoCreate;
 	RecyclerView recyclerView;
-	List<Integer> toDoData = new ArrayList<>();
-	List<String> toDoTitle = new ArrayList<>();
-	int count = 0;
+	ToDoViewModel viewModel;
+	int folderId;
+	ToDoFolder_Entity newToDoFolderEntity;
+	//List<ToDo_Entity> ScopeToDos = new ArrayList<>();
+	List<ToDo_Entity> scopeToDos;
 
 
 
@@ -47,56 +54,112 @@ public class ToDoList extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_to_do_list);
 
-		toolbar = findViewById(R.id.toolbar);
+		init();
 
+		Intent in = getIntent();
+		folderId = in.getIntExtra("folderID",0);
+
+		//toolbar.setTitle(in.getStringExtra("selectedFolder"));
+		viewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
+
+
+
+		viewModel.getAllToDos().observe(this,toDos ->
+		{
+
+			/*
+			adapter = new ToDoListAdapter(toDos, (id, localContext) ->
+			{
+				Intent intent = new Intent(localContext, ToDoEdit_Create.class);
+				intent.putExtra("toDoID",id);
+				localContext.startActivity(intent);
+			});
+
+			recyclerView.setAdapter(adapter);
+			recyclerView.setLayoutManager(new LinearLayoutManager(this));
+			adapter.notifyDataSetChanged();
+
+
+			 */
+		});
+
+
+
+		viewModel.getFolderObjectbyID(folderId).observe(this,v ->
+		{
+
+
+			toolbar.setTitle(v.getFolderName());
+
+			newToDoFolderEntity.setFolderName(v.getFolderName());
+			toolbar.setTitle(v.getFolderName());
+		});
+
+
+		viewModel.returnScopedFolder(folderId).observe(this,v ->
+		{
+
+			Log.d("OnChange Object", "Scoped Return");
+			Log.d("FolderID", String.valueOf(folderId));
+
+
+			scopeToDos = new ArrayList<>(v.get(folderId - 1).ToDo_Entity);
+
+
+			for (ToDo_Entity tmp: scopeToDos)
+			{
+				System.out.println(tmp.getToDoName());
+				System.out.println(tmp.getFKFolderID());
+
+
+			}
+
+
+			/*
+			adapter.setData(scopeToDos);
+			adapter.notifyDataSetChanged();
+
+
+			 */
+
+
+			adapter = new ToDoListAdapter(scopeToDos, (id, localContext) ->
+			{
+				Intent intent = new Intent(localContext, ToDoEdit_Create.class);
+				intent.putExtra("toDoID",id);
+				localContext.startActivity(intent);
+			});
+
+			recyclerView.setAdapter(adapter);
+			recyclerView.setLayoutManager(new LinearLayoutManager(this));
+			adapter.notifyDataSetChanged();
+
+
+
+
+
+		});
+
+
+
+
+		logic();
+	}
+
+	private void init()
+	{
+
+		newToDoFolderEntity = new ToDoFolder_Entity();
+		toolbar = findViewById(R.id.toolbar);
 		recyclerView = findViewById(R.id.RecycleTestID);
 		fabToDoCreate = findViewById(R.id.fab_addToDo);
 
 
-		 adapter = new TestRecycle(toDoTitle, item ->
-		 {
-			 //System.out.println("Hi");
-			//System.out.println(item);
-			 //recyclerView.removeViewAt(item);
-			 //adapter.notifyItemRemoved(item);
-		 });
-
-
-		recyclerView.setAdapter(adapter);
-		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		//recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-
-
-
-		RecyclerView recyclerViewDone = findViewById(R.id.RecycleDone);
-		//CustomAdapter custadapter = new CustomAdapter(generateData());
-		custadapter = new TestRecycle(toDoTitle, item ->
-		{
-			//System.out.println("Hi");
-			//System.out.println(item);
-			//recyclerView.removeViewAt(item);
-			//adapter.notifyItemRemoved(item);
-		});
-
-		recyclerViewDone.setAdapter(custadapter);
-		recyclerViewDone.setLayoutManager(new LinearLayoutManager(this));
-
-
-
-		Intent in = getIntent();
-		toolbar.setTitle(in.getStringExtra("selectedFolder"));
-		logic();
 	}
-
 
 
 	public void logic()
 	{
-
-
-		System.out.println("LOL");
-
 
 		fabToDoCreate.setOnClickListener(v ->
 		{
@@ -110,23 +173,22 @@ public class ToDoList extends AppCompatActivity
 						.setPositiveButton("Create",(dialog, which) ->
 						{
 							{
-
 								if (input.getText().toString().isEmpty())
 								{
-
 									return;
-
 								}else
 								{
 
-									toDoTitle.add(input.getText().toString());
-									System.out.println(toDoData);
+									ToDo_Entity newToDoEntity = new ToDo_Entity();
+									newToDoEntity.setToDoName(input.getText().toString());
+									newToDoEntity.setDone(false);
+									newToDoEntity.setFKFolderID(folderId);
+
+									viewModel.insertToDo(newToDoEntity);
+									viewModel.getAllToDos();
 									adapter.notifyDataSetChanged();
-									custadapter.notifyDataSetChanged();
 
 								}
-
-
 							}
 						}).show();
 
