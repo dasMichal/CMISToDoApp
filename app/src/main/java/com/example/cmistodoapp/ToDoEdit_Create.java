@@ -142,7 +142,14 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 	}
 
-
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		newtoDoEntityObject.setToDoName(todoNameTextField.getText().toString());
+		newtoDoEntityObject.setDone(IsDone.isChecked());
+		viewModel.updateDataset(newtoDoEntityObject);
+	}
 
 	/**
 	 * Init function to assign all fields
