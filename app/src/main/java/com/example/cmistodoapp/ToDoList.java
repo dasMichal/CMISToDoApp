@@ -199,6 +199,19 @@ public class ToDoList extends AppCompatActivity
 
 	}
 
+
+
+
+	public float dptopx(float dp)
+	{
+		return dp * getResources().getDisplayMetrics().density;
+	}
+
+
+
+
+
+	//------------------Graveyard orbit-------------------------------------
 	private List<Integer> generateData()
 	{
 		List<Integer> data = new ArrayList<>();
@@ -296,17 +309,4 @@ public class ToDoList extends AppCompatActivity
 
 
 	}
-
-
-
-
-
-
-	public float dptopx(float dp)
-	{
-		return dp * getResources().getDisplayMetrics().density;
-	}
-
-
-
 }

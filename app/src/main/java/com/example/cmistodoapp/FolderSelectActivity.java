@@ -124,6 +124,16 @@ public class FolderSelectActivity extends AppCompatActivity
 
 
 
+
+
+	public float dptopx(float dp)
+	{
+		return dp * getResources().getDisplayMetrics().density;
+	}
+
+
+
+	//------------------Graveyard orbit-----------------------
 	private void createGameField(List<Integer> ranNumbers, int numberFields, double average)
 	{
 
@@ -191,14 +201,7 @@ public class FolderSelectActivity extends AppCompatActivity
 
 
 		}
-
 	}
-
-
-
-
-
-
 
 	public void changeActivity(int id, String s)
 	{
@@ -210,10 +213,4 @@ public class FolderSelectActivity extends AppCompatActivity
 
 	}
 
-
-
-	public float dptopx(float dp)
-	{
-		return dp * getResources().getDisplayMetrics().density;
-	}
 }
