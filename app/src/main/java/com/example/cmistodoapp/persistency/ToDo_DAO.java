@@ -2,6 +2,7 @@ package com.example.cmistodoapp.persistency;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -39,6 +40,8 @@ public interface ToDo_DAO
 	int getItemId(int todoNum);
 
 
+	@Delete
+	void deleteToDo(ToDo_Entity toDo);
 
 
 

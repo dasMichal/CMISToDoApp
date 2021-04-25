@@ -28,6 +28,14 @@ public class ToDo_Repository
 	}
 
 
+	void deleteToDo(ToDo_Entity toDoEntity)
+	{
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
+		{
+			toDo_dao.deleteToDo(toDoEntity);
+		});
+	};
+
 	void insert(ToDo_Entity toDoEntity)
 	{
 		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
@@ -38,14 +46,6 @@ public class ToDo_Repository
 
 	void updateDatasetREPO(ToDo_Entity toDoEntity)
 	{
-		/*
-		int id  = toDo_dao.getItemId(toDoEntity.getToDoID());
-
-		if(id == null)
-			insert(toDoEntity);
-		else
-
-		 */
 
 		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
 		{
@@ -55,23 +55,17 @@ public class ToDo_Repository
 	}
 
 
-
 	LiveData<List<ToDo_Entity>> getByID(int id)
 	{
-
 		toDoByID_Repo = toDo_dao.getToDoByID(id);
 		return toDoByID_Repo;
-
 	}
-
 
 
 	LiveData<ToDo_Entity> returnToDoObject(int id)
 	{
 		toDoByIDObject_Repo = toDo_dao.returnToDoByIDObject(id);
 		return toDoByIDObject_Repo;
-
-
 	}
 
 	void setID(int id)
