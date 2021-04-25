@@ -88,9 +88,7 @@ public class ToDoList extends AppCompatActivity
 		viewModel.getFolderObjectbyID(folderId).observe(this,v ->
 		{
 
-
 			toolbar.setTitle(v.getFolderName());
-
 			newToDoFolderEntity.setFolderName(v.getFolderName());
 			toolbar.setTitle(v.getFolderName());
 		});
@@ -185,7 +183,8 @@ public class ToDoList extends AppCompatActivity
 									newToDoEntity.setFKFolderID(folderId);
 
 									viewModel.insertToDo(newToDoEntity);
-									viewModel.getAllToDos();
+									//viewModel.getAllToDos();
+									viewModel.returnScopedFolder(folderId);
 									adapter.notifyDataSetChanged();
 
 								}
