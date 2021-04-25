@@ -78,7 +78,6 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 		viewModel.getTODOObjectByID(toDoID).observe(this,v ->
 		{
 
-			Log.d("OnChange Object", "TADA");
 			System.out.println(v.getToDoName());
 			toolbar.setTitle(v.getToDoName());
 			todoNameTextField.setText(v.getToDoName());
@@ -87,6 +86,7 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 			newtoDoEntityObject.setToDoID(v.getToDoID());
 			newtoDoEntityObject.setToDoName(v.getToDoName());
 			newtoDoEntityObject.setDone(v.isDone());
+			newtoDoEntityObject.setFKFolderID(v.getFKFolderID());
 		});
 
 
@@ -198,13 +198,12 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 	{
 
 
+
 		todoNameTextField.setOnEditorActionListener(new TextView.OnEditorActionListener()
 		{
-
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 			{
-
 
 				if (actionId == KeyEvent.KEYCODE_CALL)
 				{
@@ -224,20 +223,20 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 
 		//Setting On Click Listener
+		/*
 		toolbar.setNavigationOnClickListener(v ->
 		{
 
 			Intent intent = new Intent(ToDoEdit_Create.this, ToDoList.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-			//intent.putExtra("toDoName",todoNameTextField.getText().toString());
-			//intent.putExtra("toDoID",toDoID);
-			//startActivity(intent);
 			finish();
 			startActivityIfNeeded(intent, 0);
 
 		});
 
 
+
+		 */
 
 		todo_reminderText.setOnClickListener(v ->
 		{
@@ -330,17 +329,9 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 
 				Log.d("DatePicker","Data Set successful");
-
 				TextView text = (TextView) textView;
+				String notificationType = null;
 
-				//Creates a Data Object to pass Data to the WorkManager
-				Data datePackData = new Data.Builder()           //Very Smart name, I know.  Don't @ me
-						.putInt("minute", minute)
-						.putInt("hourOfDay", hourOfDay)
-						.putInt("dayOfMonth", dayOfMonth)
-						.putInt("month", month)
-						.putInt("year", year)
-						.build();
 
 
 
@@ -352,18 +343,38 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 				{
 					case 0:
 						text.setText(getResources().getString(R.string.reminder_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
-						notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
+						//notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
+						notificationType = "Reminder";
+
 						break;
 					case 1:
 						text.setText(getResources().getString(R.string.due_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
-						notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
+						//notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
+						notificationType = "ToDo Due";
+
 						break;
 					default:
 						Log.wtf("Ballistic descent mode", "This Should definitely not happen (Error in whatTextView switch Case");
 						break;
-
-
 				}
+
+
+				//Creates a Data Object to pass Data to the WorkManager
+				Data datePackData = new Data.Builder()           //Very Smart name, I know.  Don't @ me
+						.putInt("minute", minute)
+						.putInt("hourOfDay", hourOfDay)
+						.putInt("dayOfMonth", dayOfMonth)
+						.putInt("month", month)
+						.putInt("year", year)
+						.putInt("toDoID",toDoID)
+						.putString("notificationText",text.getText().toString())
+						.putString("notificationType",notificationType)
+						.build();
+
+
+
+				notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
+
 
 
 
