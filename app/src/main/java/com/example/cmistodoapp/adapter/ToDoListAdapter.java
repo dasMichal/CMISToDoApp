@@ -64,15 +64,6 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 		holder.ToDoChecked.setChecked(this.todoData.get(position).isDone());
 		//holder.bind(this.todoData.get(position),listener);
 
-		/*
-		holder.ToDoText.setText(" "+this.data.get(position));
-		holder.ToDoChecked.setEnabled(true);
-
-		holder.todo1.setId(this.data.size());
-		holder.bind(data.get(position), listener);
-
-
-		 */
 	}
 
 	@Override
@@ -149,7 +140,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 
 					//listener.onItemClick(integer);
 
-					int curSize = getItemCount();
+					//int curSize = getItemCount();
 
 
 
