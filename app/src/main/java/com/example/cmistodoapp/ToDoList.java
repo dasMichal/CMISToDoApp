@@ -62,39 +62,16 @@ public class ToDoList extends AppCompatActivity
 		//toolbar.setTitle(in.getStringExtra("selectedFolder"));
 		viewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
 
-
-
-		viewModel.getAllToDos().observe(this,toDos ->
-		{
-
-			/*
-			adapter = new ToDoListAdapter(toDos, (id, localContext) ->
-			{
-				Intent intent = new Intent(localContext, ToDoEdit_Create.class);
-				intent.putExtra("toDoID",id);
-				localContext.startActivity(intent);
-			});
-
-			recyclerView.setAdapter(adapter);
-			recyclerView.setLayoutManager(new LinearLayoutManager(this));
-			adapter.notifyDataSetChanged();
-
-
-			 */
-		});
-
-
-
 		viewModel.getFolderObjectbyID(folderId).observe(this,v ->
 		{
-
 			toolbar.setTitle(v.getFolderName());
 			newToDoFolderEntity.setFolderName(v.getFolderName());
 			toolbar.setTitle(v.getFolderName());
 		});
 
 
-		viewModel.returnScopedFolder(folderId).observe(this,v ->
+		/*
+		viewModel.getsFolderWithToDos(folderId).observe(this, v ->
 		{
 
 			Log.d("OnChange Object", "Scoped Return");
@@ -103,22 +80,11 @@ public class ToDoList extends AppCompatActivity
 
 			scopeToDos = new ArrayList<>(v.get(folderId - 1).ToDo_Entity);
 
-
 			for (ToDo_Entity tmp: scopeToDos)
 			{
 				System.out.println(tmp.getToDoName());
 				System.out.println(tmp.getFKFolderID());
-
-
 			}
-
-
-			/*
-			adapter.setData(scopeToDos);
-			adapter.notifyDataSetChanged();
-
-
-			 */
 
 
 			adapter = new ToDoListAdapter(scopeToDos, (id, localContext) ->
@@ -135,8 +101,51 @@ public class ToDoList extends AppCompatActivity
 
 
 
+		});
+
+		*/
+
+		viewModel.getToDosFromFolderTest(folderId).observe(this,todolist ->
+		{
+
+
+			try
+			{
+
+				Log.d("OnChange Object Optimized", "Scoped Return " +todolist);
+
+				adapter = new ToDoListAdapter(todolist, (id, localContext) ->
+				{
+					Intent intent = new Intent(localContext, ToDoEdit_Create.class);
+					intent.putExtra("toDoID",id);
+					localContext.startActivity(intent);
+				});
+
+				recyclerView.setAdapter(adapter);
+				recyclerView.setLayoutManager(new LinearLayoutManager(this));
+				adapter.notifyDataSetChanged();
+
+
+
+
+
+			}catch (NullPointerException e)
+			{
+
+				Log.e("Observable Scoped","No Object found. Null Point ");
+
+			}
+
+
+
+
+
+
 
 		});
+
+
+
 
 
 
@@ -184,7 +193,7 @@ public class ToDoList extends AppCompatActivity
 
 									viewModel.insertToDo(newToDoEntity);
 									//viewModel.getAllToDos();
-									viewModel.returnScopedFolder(folderId);
+									//viewModel.getsFolderWithToDos(folderId);
 									adapter.notifyDataSetChanged();
 
 								}
