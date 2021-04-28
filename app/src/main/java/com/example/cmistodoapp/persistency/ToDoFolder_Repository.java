@@ -39,19 +39,38 @@ public class ToDoFolder_Repository
 	}
 
 
-	LiveData<ToDoFolder_Entity> returnFolderObject(int id)
+
+
+	void deleteFolder(ToDoFolder_Entity folder)
 	{
-		ToDoFolderByIdObject_Repo = toDo_dao.returnToDoFolderByIDObject(id);
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
+		{
+			toDo_dao.deleteFolder(folder);
+		});
+	};
+
+
+
+	LiveData<ToDoFolder_Entity> getToDoFolderObject_byID(int id)
+	{
+		ToDoFolderByIdObject_Repo = toDo_dao.getToDoFolderObject_byID(id);
 		return ToDoFolderByIdObject_Repo;
 	}
 
 
-	LiveData<List<FolderWithToDos>> returnScopedFolder(int id)
+	LiveData<List<FolderWithToDos>> getsFolderWithToDos(int id)
 	{
-		ToDo_Scoped = toDo_dao.getsFolderToDos();
+		ToDo_Scoped = toDo_dao.getsFolderWithToDos();
 		return ToDo_Scoped;
 	}
 
+
+	LiveData<List<ToDo_Entity>> getToDosFromFolderTest(int folderid)
+	{
+
+		return toDo_dao.getToDosFromFolderTest(folderid);
+
+	}
 
 
 }
