@@ -4,13 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -42,6 +46,10 @@ public class FolderSelectActivity extends AppCompatActivity
 	FolderAdapter adapter;
 	ToDoViewModel viewModel;
 	FloatingActionButton fab;
+	boolean deleting = false;
+	ToDoFolder_Entity newToDOFolder;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -52,6 +60,7 @@ public class FolderSelectActivity extends AppCompatActivity
 		init();
 
 		viewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
+
 		viewModel.getAllFolders().observe(this,folder ->
 		{
 
@@ -59,34 +68,142 @@ public class FolderSelectActivity extends AppCompatActivity
 
 			adapter = new FolderAdapter(folder, new FolderAdapter.OnItemClickListener()
 			{
-
 				@Override
 				public void onFolderClick(int id, Context localContext)
 				{
 					Intent intent = new Intent(localContext, ToDoList.class);
 					//intent.putExtra("selectedFolder", folder.get(id).getFolderName());
-					intent.putExtra("folderID",id);
+					intent.putExtra("folderID", id);
 					localContext.startActivity(intent);
+
 				}
+			}, new FolderAdapter.OnCreateContextMenuListener()
+			{
+				@Override
+				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo, int position)
+				{
+
+					//onCreateContextMenu(menu, v, menuInfo,position);
+					RecyclerView test = (RecyclerView) v.getParent();
 
 
+					menu.setHeaderTitle("Select The Action");
+					menu.add(0, position, 0, "Delete2");//groupId, itemId, order, title
 
-			});
+
+					//MenuInflater inflater = getMenuInflater();
+					//inflater.inflate(R.menu.context_menue, menu);
+
+				}
+			}, new View.OnCreateContextMenuListener()
+			{
+				@Override
+				public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+				{
+
+
+					RecyclerView tempRecycle = (RecyclerView) v.getParent();
+					int position = tempRecycle.getChildAdapterPosition(v);
+					LinearLayout parent2 = (LinearLayout) tempRecycle.getChildAt(position);
+					int realID =  parent2.getChildAt(0).getId();
+
+
+					newToDOFolder.setFolderID(folder.get(position).getFolderID());
+					newToDOFolder.setFolderName(folder.get(position).getFolderName());
+
+					System.out.println("RealID: "+realID);
+					System.out.println("Pos in Recycle: "+position);
+
+
+					menu.add(realID, realID, 0, "Delete");//groupId, itemId, order, title
+				}
+			}
+
+
+			);
+
 
 			recyclerView.setAdapter(adapter);
 			recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-
-
+			registerForContextMenu(recyclerView);
 
 		});
-
-
-
 
 		logic();
 
 
+
 	}
+
+
+
+
+	/*
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+	{
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.add("FFFF");
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.context_menue, menu);
+
+
+	}
+
+
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+
+		System.out.println("item.getItemId() = " + item.getItemId());
+		System.out.println(item.getGroupId());
+
+		switch (item.getTitle().toString())
+		{
+			case "Delete":
+
+				System.out.println("Delete");
+
+				deleteFolder();
+
+
+				return true;
+			default:
+				return super.onContextItemSelected(item);
+		}
+	}
+
+	private void deleteFolder()
+	{
+
+
+		new AlertDialog.Builder(this)
+				.setTitle("Delete Folder?")
+				.setCancelable(true)
+				.setPositiveButton(R.string.yes,(dialog, which) ->
+				{
+					{
+
+						deleting = true;
+
+						viewModel.deleteFolder(newToDOFolder);
+
+
+					}
+				})
+				.setNegativeButton(R.string.no,(dialog, which) ->
+				{
+					{
+						dialog.dismiss();
+					}
+				})
+
+				.show();
+
+	}
+
 
 	private void logic()
 	{
@@ -101,11 +218,35 @@ public class FolderSelectActivity extends AppCompatActivity
 
 
 
+
+
+
+
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	private void init()
 	{
+		newToDOFolder = new ToDoFolder_Entity();
 		fab = findViewById(R.id.FAB_createFolder);
 		toolbar1 = findViewById(R.id.toolbar1);
 		menue1 = findViewById(R.id.drawerLayout);
