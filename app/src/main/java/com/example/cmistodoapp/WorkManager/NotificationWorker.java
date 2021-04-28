@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 public class NotificationWorker extends Worker
 {
 
+
+
 	public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters params)
 	{
 		super(context, params);
@@ -37,12 +39,9 @@ public class NotificationWorker extends Worker
 		int month = getInputData().getInt("month",0);
 		int dayOfMonth = getInputData().getInt("dayOfMonth",0);
 		int toDoID = getInputData().getInt("toDoID",0);
+		int folderID = getInputData().getInt("FolderID",0);
 		String notificationText2 = getInputData().getString("notificationText");
 		String notificationType = getInputData().getString("notificationType");
-
-
-
-
 
 
 		// Create an Intent for the activity you want to start
@@ -53,6 +52,7 @@ public class NotificationWorker extends Worker
 		// Create the TaskStackBuilder and add the intent, which inflates the back stack
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
 		stackBuilder.addNextIntentWithParentStack(resultIntent);
+		stackBuilder.editIntentAt(1).putExtra("folderID",folderID);
 		// Get the PendingIntent containing the entire back stack
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -70,6 +70,7 @@ public class NotificationWorker extends Worker
 				.setCategory(NotificationCompat.CATEGORY_REMINDER)
 				.setAllowSystemGeneratedContextualActions(true)
 				.setContentIntent(resultPendingIntent)
+				.setAutoCancel(true)
 				.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
 		NotificationManagerCompat.from(getApplicationContext()).notify(420,builder.build());

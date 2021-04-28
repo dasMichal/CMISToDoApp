@@ -446,6 +446,8 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 						.putInt("toDoID",toDoID)
 						.putString("notificationText",text.getText().toString())
 						.putString("notificationType",notificationType)
+						.putString("title",newtoDoEntityObject.getToDoName())
+						.putInt("FolderID",newtoDoEntityObject.getFKFolderID())
 						.build();
 
 
