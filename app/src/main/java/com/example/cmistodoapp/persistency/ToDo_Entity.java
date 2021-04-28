@@ -3,11 +3,18 @@ package com.example.cmistodoapp.persistency;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import org.jetbrains.annotations.NotNull;
 
-@Entity(tableName = "ToDo_table")
+@Entity(tableName = "ToDo_table",
+		foreignKeys = {@ForeignKey(entity = ToDoFolder_Entity.class,
+				parentColumns = "Folder_ID",
+				childColumns = "FK_FolderID",
+				onDelete = ForeignKey.CASCADE)
+		})
+
 public class ToDo_Entity
 {
 
@@ -31,10 +38,23 @@ public class ToDo_Entity
 	@ColumnInfo(name= "ToDo_IsDone")
 	private boolean isDone;
 
+
 	@ColumnInfo(name= "FK_FolderID")
 	private int FKFolderID;
 
 
+
+
+	/*
+	@ColumnInfo(name= "ToDo_DueTime")
+	private ZonedDateTime dueTime;
+
+	@ColumnInfo(name= "ToDo_RemindeTime")
+	private ZonedDateTime remindeTime;
+
+
+
+	 */
 
 
 	public int getFKFolderID()
