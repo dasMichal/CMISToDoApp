@@ -15,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cmistodoapp.R;
 import com.example.cmistodoapp.persistency.ToDo_Entity;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
-
-
+import java.util.Locale;
 
 
 public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHolder>
@@ -64,6 +66,17 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 		holder.ToDoChecked.setChecked(this.todoData.get(position).isDone());
 		//holder.bind(this.todoData.get(position),listener);
 
+
+		if(this.todoData.get(position).getDueTime() != null)
+		{
+			DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withLocale(Locale.getDefault());
+			ZonedDateTime tmp = this.todoData.get(position).getDueTime();
+
+			holder.timeandDate.setText(tmp.format(formatter));
+		}
+
+
+
 	}
 
 	@Override
@@ -77,9 +90,10 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 
 	public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 	{
-		private TextView ToDoText;
-		private CheckBox ToDoChecked;
-		private CardView todo1;
+		private final TextView ToDoText;
+		private final CheckBox ToDoChecked;
+		private final CardView todo1;
+		private final TextView timeandDate;
 
 
 
@@ -89,6 +103,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 			this.ToDoText = view.findViewById(R.id.todoTitle);
 			this.ToDoChecked = view.findViewById(R.id.ToDoChecked);
 			this.todo1 = view.findViewById(R.id.todo1);
+			this.timeandDate = view.findViewById(R.id.TimeandDateText);
 
 
 
@@ -145,7 +160,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 
 
 
-					Toast.makeText(v.getContext(), " "+integer.toString(), Toast.LENGTH_SHORT).show();
+					Toast.makeText(v.getContext(), " "+ integer, Toast.LENGTH_SHORT).show();
 
 
 
