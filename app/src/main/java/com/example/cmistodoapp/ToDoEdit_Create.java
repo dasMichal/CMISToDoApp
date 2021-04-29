@@ -38,13 +38,14 @@ import com.example.cmistodoapp.persistency.ToDo_Entity;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 
 
 public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 {
 
-	private static final String CHANNEL_ID = "Seven" ;
+	private static final String CHANNEL_ID_Due = "Due" ;
+	private static final String CHANNEL_ID_Reminder = "Reminder" ;
+
 	EditText todoNameTextField;
 	TextView todo_reminderText;
 	TextView todo_reminderDue;
@@ -96,6 +97,22 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 				newtoDoEntityObject.setDone(v.isDone());
 				newtoDoEntityObject.setFKFolderID(v.getFKFolderID());
 
+
+				if(v.getDueTime() != null)
+				{
+					newtoDoEntityObject.setDueTime(v.getDueTime());
+					setText(1, newtoDoEntityObject);
+				}
+				if(v.getRemindeTime() != null)
+				{
+					newtoDoEntityObject.setRemindeTime(v.getRemindeTime());
+					setText(0, newtoDoEntityObject);
+				}
+
+
+
+
+
 			}catch (NullPointerException e)
 			{
 
@@ -146,7 +163,6 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 
 
-
 		viewModel.getSubtasksFromToDOTest(toDoID).observe(this, subtasks ->
 		{
 
@@ -155,11 +171,6 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 			{
 				return;
 			}
-
-
-			System.out.println("TEST TEST");
-			System.out.println(subtasks);
-			System.out.println("END TEST");
 
 			subTaskLayout.removeAllViews();
 
@@ -177,10 +188,6 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 
 		viewModel.getToDoObject_byID(toDoID);
-
-
-
-
 
 
 		logic();
@@ -236,17 +243,29 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 	{
 		// Create the NotificationChannel, but only on API 26+ because
 		// the NotificationChannel class is new and not in the support library
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			CharSequence name = getString(R.string.channel_name);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+		{
+			CharSequence name = getString(R.string.notification_channel_name_Reminder);
 			String description = getString(R.string.channel_description);
 			int importance = NotificationManager.IMPORTANCE_DEFAULT;
-			NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-			channel.setDescription(description);
+			NotificationChannel channelReminder = new NotificationChannel(CHANNEL_ID_Reminder, name, importance);
+			channelReminder.setDescription(description);
+
+
+			 name = getString(R.string.notification_channel_name_Due);
+			 description = getString(R.string.channel_description);
+			 importance = NotificationManager.IMPORTANCE_DEFAULT;
+			NotificationChannel channelDue = new NotificationChannel(CHANNEL_ID_Due, name, importance);
+			channelDue.setDescription(description);
+
+
+
 
 			// Register the channel with the system; you can't change the importance
 			// or other notification behaviors after this
 			NotificationManager notificationManager = getSystemService(NotificationManager.class);
-			notificationManager.createNotificationChannel(channel);
+			notificationManager.createNotificationChannel(channelReminder);
+			notificationManager.createNotificationChannel(channelDue);
 		}
 
 
@@ -290,7 +309,6 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 								deleting = true;
 								viewModel.getSubtasksFromToDO(newtoDoEntityObject.getToDoID()).removeObservers(this);
-								//viewModel.deleteToDoWithSubTask(newtoDoEntityObject.getToDoID());
 								viewModel.deleteToDo(newtoDoEntityObject);
 								//Intent intent = new Intent(ToDoEdit_Create.this, ToDoList.class);
 								finish();
@@ -308,15 +326,6 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 
 		});
-
-
-
-
-
-
-
-
-
 
 
 
@@ -394,6 +403,28 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 	}
 
 
+	private void setText(int whatTextView,ToDo_Entity toDo_entity)
+	{
+
+		switch(whatTextView)
+		{
+			case 0:
+
+				todo_reminderText.setText(getResources().getString(R.string.reminder_with_time, toDo_entity.getRemindeTime().getHour(), toDo_entity.getRemindeTime().getMinute(), toDo_entity.getRemindeTime().getDayOfMonth(), toDo_entity.getRemindeTime().getMonthValue()));
+				break;
+			case 1:
+				todo_reminderDue.setText(getResources().getString(R.string.due_with_time, toDo_entity.getDueTime().getHour(), toDo_entity.getDueTime().getMinute(), toDo_entity.getDueTime().getDayOfMonth(), toDo_entity.getDueTime().getMonthValue()));
+				break;
+			default:
+				Log.wtf("Ballistic descent mode", "This Should definitely not happen (Error in whatTextView switch Case");
+				break;
+		}
+
+
+
+	}
+
+
 	private void showDatePicker(View textView, int whatTextView, int hourOfDay, int minute)
 	{
 		//Second
@@ -407,10 +438,7 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 				Log.d("DatePicker","Data Set successful");
 				TextView text = (TextView) textView;
-				String notificationType = null;
-
-
-
+				String NotificationType;
 
 				/*
 				Switch Case to change the respective TextView that was selected and called the  Time and DatePicker.
@@ -420,35 +448,34 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 				{
 					case 0:
 						text.setText(getResources().getString(R.string.reminder_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
-						//notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
-						notificationType = "Reminder";
+						NotificationType = "Reminder";
+						newtoDoEntityObject.setRemindeTime(ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone()) );
 
 						break;
 					case 1:
 						text.setText(getResources().getString(R.string.due_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
-						//notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
-						notificationType = "ToDo Due";
+						newtoDoEntityObject.setDueTime(ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone()) );
+						NotificationType = "ToDo Due";
 
 						break;
 					default:
 						Log.wtf("Ballistic descent mode", "This Should definitely not happen (Error in whatTextView switch Case");
+						NotificationType = "Because Java insists on this being here";
 						break;
 				}
 
 
 				//Creates a Data Object to pass Data to the WorkManager
 				Data datePackData = new Data.Builder()           //Very Smart name, I know.  Don't @ me
-						.putInt("minute", minute)
-						.putInt("hourOfDay", hourOfDay)
-						.putInt("dayOfMonth", dayOfMonth)
-						.putInt("month", month)
-						.putInt("year", year)
+
 						.putInt("toDoID",toDoID)
-						.putString("notificationText",text.getText().toString())
-						.putString("notificationType",notificationType)
-						.putString("title",newtoDoEntityObject.getToDoName())
 						.putInt("FolderID",newtoDoEntityObject.getFKFolderID())
+						.putString("NotificationText",text.getText().toString())
+						.putString("NotificationType",NotificationType)
+						.putString("ToDoTitle",newtoDoEntityObject.getToDoName())
 						.build();
+
+
 
 
 				notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
@@ -468,14 +495,15 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 	private void notificationPlaner( Data DatePackData,int year, int month, int dayOfMonth, int hourOfDay, int minute)
 	{
-		//saving the Time the USer has selected in a ZonedDateTime variable
-		ZonedDateTime selectedTime = ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone());
 
-		getTime(); //Grabbing the current Time
+
+		//saving the Time the User has selected in a ZonedDateTime variable
+		ZonedDateTime selectedTime = ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone());
+		getTime();//Grabbing the current Time
+
 		//Calculate the Duration between the current Time and the User selected Time
 		Duration delayToNotification = Duration.between(currentTime,selectedTime); //calculating the "Distance" between the two Dates
 
-		System.out.println("Duration "+delayToNotification);
 		Log.d("Time Duration", String.valueOf(delayToNotification));
 
 
@@ -484,7 +512,7 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 				new OneTimeWorkRequest.Builder(NotificationWorker.class)
 						.setInitialDelay(delayToNotification)  //Setting the delay to the Value that was calculated before
 						.setInputData(DatePackData)             //Passing Data to the WorkManager
-						.addTag("TestRequest")                  //Adding a tag to keep track of this WorkRequest
+						.addTag(String.valueOf(newtoDoEntityObject.getToDoID()))  //Adding a tag to keep track of this WorkRequest
 						.build();                               //Build the request
 
 		//Submitting the WorkRequest to the system
@@ -531,13 +559,7 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 		subTaskCheckbox.setOnClickListener(v ->
 		{
 			//Checks if the Sub-Task Checkbox is toggled and disables/enables the corresponding EditText Fields
-			if (subTaskCheckbox.isChecked())
-			{
-				newSubText.setEnabled(false);
-			} else
-			{
-				newSubText.setEnabled(true);
-			}
+			newSubText.setEnabled(!subTaskCheckbox.isChecked());
 			Log.d("subTaskCheckbox", String.valueOf(subTaskCheckbox.isChecked()));
 
 		});
@@ -552,10 +574,6 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 			{
 
-				//System.out.println("Editor Action");
-				//System.out.println(actionId);
-				//System.out.println(event);
-				//System.out.println(KeyEvent.keyCodeToString(actionId));
 				if (actionId == KeyEvent.KEYCODE_ENDCALL)
 				{
 					Log.d("KeyEvent","Enter Pressed");
@@ -674,13 +692,7 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 		subTaskCheckbox.setOnClickListener(v ->
 		{
 			//Checks if the Sub-Task Checkbox is toggled and disables/enables the corresponding EditText Fields
-			if (subTaskCheckbox.isChecked())
-			{
-				newSubText.setEnabled(false);
-			} else
-			{
-				newSubText.setEnabled(true);
-			}
+			newSubText.setEnabled(!subTaskCheckbox.isChecked());
 			Log.d("subTaskCheckbox", String.valueOf(subTaskCheckbox.isChecked()));
 
 		});
@@ -779,21 +791,6 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 		subTaskLayout.addView(subRow);
 
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	public float dptopx(float dp)
