@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {ToDo_Entity.class, ToDoFolder_Entity.class,SubTask_Entity.class}, version = 2, exportSchema = false)
+@Database(entities = {ToDo_Entity.class, ToDoFolder_Entity.class,SubTask_Entity.class}, version = 3, exportSchema = false)
 public abstract class ToDoRoomDatabase extends RoomDatabase
 {
 
@@ -24,7 +24,7 @@ public abstract class ToDoRoomDatabase extends RoomDatabase
 	static final ExecutorService databaseWriteExecutor =
 			Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-	static ToDoRoomDatabase getDatabase(final Context context) {
+	public static ToDoRoomDatabase getDatabase(final Context context) {
 		if (INSTANCE == null) {
 			synchronized (ToDoRoomDatabase.class) {
 				if (INSTANCE == null) {
@@ -40,7 +40,7 @@ public abstract class ToDoRoomDatabase extends RoomDatabase
 	}
 
 
-	private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
+	private static final RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
 		@Override
 		public void onCreate(@NonNull SupportSQLiteDatabase db) {
 			super.onCreate(db);

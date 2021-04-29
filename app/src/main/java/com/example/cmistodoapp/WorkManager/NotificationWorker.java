@@ -8,13 +8,19 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
+import androidx.lifecycle.LiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.example.cmistodoapp.R;
 import com.example.cmistodoapp.ToDoEdit_Create;
+import com.example.cmistodoapp.persistency.ToDoRoomDatabase;
+import com.example.cmistodoapp.persistency.ToDo_DAO;
+import com.example.cmistodoapp.persistency.ToDo_Entity;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class NotificationWorker extends Worker
 {
@@ -33,39 +39,39 @@ public class NotificationWorker extends Worker
 	{
 
 		final String CHANNEL_ID = "Seven" ;
-		int hourOfDay = getInputData().getInt("hourOfDay",0);
-		int minute = getInputData().getInt("minute",0);
-		int year =  getInputData().getInt("year",0);
-		int month = getInputData().getInt("month",0);
-		int dayOfMonth = getInputData().getInt("dayOfMonth",0);
+
 		int toDoID = getInputData().getInt("toDoID",0);
 		int folderID = getInputData().getInt("FolderID",0);
-		String notificationText2 = getInputData().getString("notificationText");
-		String notificationType = getInputData().getString("notificationType");
+		String notificationText2 = getInputData().getString("NotificationText");
+		String NotificationType = getInputData().getString("NotificationType");
+		ToDo_Entity tempToDo = new ToDo_Entity();
+		LiveData<ToDo_Entity> toDoByIDObject_Repo;
+		//getInstance(getApplicationContext());
+
+		Context context = getApplicationContext();
+		ToDoRoomDatabase db = ToDoRoomDatabase.getDatabase(context);
+		ToDo_DAO todoDAO = db.DAO();
+
+		tempToDo.setToDoName(todoDAO.getPLAINToDoObject_byID(toDoID).getToDoName());
 
 
 		// Create an Intent for the activity you want to start
 		Intent resultIntent = new Intent(getApplicationContext(), ToDoEdit_Create.class);
 		resultIntent.putExtra("toDoID",toDoID);
 
-
 		// Create the TaskStackBuilder and add the intent, which inflates the back stack
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
 		stackBuilder.addNextIntentWithParentStack(resultIntent);
-		stackBuilder.editIntentAt(1).putExtra("folderID",folderID);
+		Objects.requireNonNull(stackBuilder.editIntentAt(1)).putExtra("folderID",folderID);
 		// Get the PendingIntent containing the entire back stack
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-		//String notificationText = getApplicationContext().getResources().getString(R.string.reminder_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month);
-		//System.out.println(notificationText);
 
 
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
 				.setSmallIcon(R.drawable.ic_baseline_notifications_24)
-				.setContentTitle(notificationType)
-				.setContentText(notificationText2)
+				.setContentTitle(NotificationType)
+				.setContentText(tempToDo.getToDoName())
 				.setChannelId(CHANNEL_ID)
 				.setCategory(NotificationCompat.CATEGORY_REMINDER)
 				.setAllowSystemGeneratedContextualActions(true)
