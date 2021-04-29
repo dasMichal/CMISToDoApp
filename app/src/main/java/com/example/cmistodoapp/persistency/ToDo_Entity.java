@@ -56,9 +56,25 @@ public class ToDo_Entity
 	private ZonedDateTime remindeTime;
 
 
+	public ZonedDateTime getDueTime()
+	{
+		return dueTime;
+	}
 
-	 */
+	public void setDueTime(ZonedDateTime dueTime)
+	{
+		this.dueTime = dueTime;
+	}
 
+	public ZonedDateTime getRemindeTime()
+	{
+		return remindeTime;
+	}
+
+	public void setRemindeTime(ZonedDateTime remindeTime)
+	{
+		this.remindeTime = remindeTime;
+	}
 
 	public int getFKFolderID()
 	{
