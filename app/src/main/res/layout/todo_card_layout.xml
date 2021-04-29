@@ -48,7 +48,8 @@
                     android:layout_height="match_parent"
                     android:id="@+id/todoTitle"
                     android:layout_weight="1"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textSize="24sp" />
 
             <View
                     android:id="@+id/divider"
