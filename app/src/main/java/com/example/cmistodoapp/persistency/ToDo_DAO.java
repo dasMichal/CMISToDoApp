@@ -44,6 +44,10 @@ public interface ToDo_DAO
 	@Query("SELECT * FROM ToDo_table WHERE ToDo_ID = :todoNum ")
 	LiveData<ToDo_Entity> getToDoObject_byID(int todoNum);
 
+
+	@Query("SELECT * FROM ToDo_table WHERE ToDo_ID = :todoNum ")
+	ToDo_Entity getPLAINToDoObject_byID(int todoNum);
+
 	@Query("SELECT ToDo_ID FROM ToDo_table WHERE ToDo_ID = :todoNum LIMIT 1")
 	int getItemId(int todoNum);
 
@@ -69,12 +73,12 @@ public interface ToDo_DAO
 
 	@Transaction
 	@Query("SELECT * FROM Folder_Table")
-	public LiveData<List<FolderWithToDos>> getsFolderWithToDos();
+	LiveData<List<FolderWithToDos>> getsFolderWithToDos();
 
 
 	@Transaction
 	@Query("SELECT * FROM ToDo_table WHERE FK_FolderID = :folderNum")
-	public LiveData<List<ToDo_Entity>> getToDosFromFolderTest(int folderNum);
+	LiveData<List<ToDo_Entity>> getToDosFromFolderTest(int folderNum);
 
 
 	@Query("DELETE FROM ToDo_table WHERE FK_FolderID = :folderNum ")
@@ -96,11 +100,11 @@ public interface ToDo_DAO
 
 	@Transaction
 	@Query("SELECT * FROM ToDo_table WHERE ToDo_ID = :todoNum ")
-	public LiveData<List<ToDosWithSubTasks>> getSubtasksFromToDO(int todoNum);
+	LiveData<List<ToDosWithSubTasks>> getSubtasksFromToDO(int todoNum);
 
 	@Transaction
 	@Query("SELECT * FROM SubTask_table WHERE FK_ToDoID = :todoNum")
-	public LiveData<List<SubTask_Entity>> getSubtasksFromToDOTest(int todoNum);
+	LiveData<List<SubTask_Entity>> getSubtasksFromToDOTest(int todoNum);
 
 	@Delete
 	void deleteSubTask(SubTask_Entity subTask);
