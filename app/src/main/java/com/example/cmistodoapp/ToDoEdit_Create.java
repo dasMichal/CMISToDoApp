@@ -1,10 +1,8 @@
 package com.example.cmistodoapp;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -20,21 +18,34 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import com.example.cmistodoapp.WorkManager.NotificationWorker;
+import com.example.cmistodoapp.databinding.ActivityMain2Binding;
+import com.example.cmistodoapp.persistency.SubTask_Entity;
+import com.example.cmistodoapp.persistency.ToDoViewModel;
+import com.example.cmistodoapp.persistency.ToDo_Entity;
+
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
 
-public class ToDoEdit_Create extends AppCompatActivity
+public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 {
 
-	private static final String CHANNEL_ID = "Seven" ;
+	private static final String CHANNEL_ID_Due = "Due" ;
+	private static final String CHANNEL_ID_Reminder = "Reminder" ;
+
 	EditText todoNameTextField;
 	TextView todo_reminderText;
 	TextView todo_reminderDue;
@@ -46,13 +57,13 @@ public class ToDoEdit_Create extends AppCompatActivity
 	DatePickerDialog datePickerDialog;
 	String ToDoTitle;
 	int toDoID;
-
-
+	ToDoViewModel viewModel;
+	MutableLiveData<String> ToDoTitleLive;
 	ZonedDateTime currentTime;
-
-	AlarmManager alarmMgr;
-	PendingIntent alarmIntent;
-
+	ToDo_Entity newtoDoEntityObject;
+	SubTask_Entity newSubTaskEntityObject;
+	ImageButton deleteButton;
+	boolean deleting = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -60,40 +71,152 @@ public class ToDoEdit_Create extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main2);
 
-		Intent in = getIntent();
+		ActivityMain2Binding binding = DataBindingUtil.setContentView(this,R.layout.activity_main2);
+		binding.setLifecycleOwner(this);
+		viewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
 
-		ToDoTitle = in.getStringExtra("toDoTitle");
+		Intent in = getIntent();
 		toDoID = in.getIntExtra("toDoID",0);
-		System.out.println(toDoID);
+
 
 		init();
-		logic();
-		newSubText(subTaskLayout.getChildCount());
+
+
+		viewModel.getToDoObject_byID(toDoID).observe(this, v ->
+		{
+
+			try
+			{
+				System.out.println(v.getToDoName());
+				toolbar.setTitle(v.getToDoName());
+				todoNameTextField.setText(v.getToDoName());
+				IsDone.setChecked(v.isDone());
+
+				newtoDoEntityObject.setToDoID(v.getToDoID());
+				newtoDoEntityObject.setToDoName(v.getToDoName());
+				newtoDoEntityObject.setDone(v.isDone());
+				newtoDoEntityObject.setFKFolderID(v.getFKFolderID());
+
+
+				if(v.getDueTime() != null)
+				{
+					newtoDoEntityObject.setDueTime(v.getDueTime());
+					setText(1, newtoDoEntityObject);
+				}
+				if(v.getRemindeTime() != null)
+				{
+					newtoDoEntityObject.setRemindeTime(v.getRemindeTime());
+					setText(0, newtoDoEntityObject);
+				}
+
+
+
+
+
+			}catch (NullPointerException e)
+			{
+
+				Log.e("Observable","No Object found ");
+			}
+
+
+		});
+
 
 		/*
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-				.setSmallIcon(R.drawable.ic_baseline_location_on_24)
-				.setContentTitle("Send Help")
-				.setContentText("How to Schedule a notification Josh/Marcus ? ")
-				.setChannelId(CHANNEL_ID)
-				.setCategory(NotificationCompat.CATEGORY_MESSAGE)
-				.setAllowSystemGeneratedContextualActions(true)
-				.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-		*/
 
+		viewModel.getSubtasksFromToDO(toDoID).observe(this, v ->
+		{
+
+			if(deleting)
+			{
+				return;
+			}
+
+			try
+			{
+				ArrayList<SubTask_Entity> scopeSubTasks = new ArrayList<>(v.get(0).SubTask_Entity);
+				subTaskLayout.removeAllViews();
+
+				for (int i = 0; i < scopeSubTasks.size(); i++)
+				{
+					SubTask_Entity subTask = scopeSubTasks.get(i);
+					System.out.println(subTask.getSubTaskText());
+
+					newSubTextDatabase(subTask.getSubTaskText(), subTask.isDone(), subTask.getSubTaskID(),i);
+				}
+				newSubText(subTaskLayout.getChildCount());
+
+
+			}catch (NullPointerException e)
+			{
+				Log.e("Observable Scoped","No Object found ");
+
+			}
+
+
+		});
+
+
+
+		 */
+
+
+
+		viewModel.getSubtasksFromToDOTest(toDoID).observe(this, subtasks ->
+		{
+
+
+			if(deleting)
+			{
+				return;
+			}
+
+			subTaskLayout.removeAllViews();
+
+			for (int i = 0; i < subtasks.size(); i++)
+			{
+				SubTask_Entity subTask = subtasks.get(i);
+				System.out.println(subTask.getSubTaskText());
+
+				newSubTextDatabase(subTask.getSubTaskText(), subTask.isDone(), subTask.getSubTaskID(),i);
+			}
+			newSubText(subTaskLayout.getChildCount());
+
+
+		});
+
+
+		viewModel.getToDoObject_byID(toDoID);
+
+
+		logic();
+
+		//newSubText(subTaskLayout.getChildCount());
 
 		createNotificationChannel();
-
-		//NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-		// notificationId is a unique int for each notification that you must define
-		//notificationManager.notify(420, builder.build());
-
-
 
 	}
 
 
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		newtoDoEntityObject.setToDoName(todoNameTextField.getText().toString());
+		newtoDoEntityObject.setDone(IsDone.isChecked());
+		viewModel.updateToDo(newtoDoEntityObject);
+
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		//newtoDoEntityObject.setToDoName(todoNameTextField.getText().toString());
+		//newtoDoEntityObject.setDone(IsDone.isChecked());
+		//viewModel.updateDataset(newtoDoEntityObject);
+	}
 
 	/**
 	 * Init function to assign all fields
@@ -101,68 +224,127 @@ public class ToDoEdit_Create extends AppCompatActivity
 	private void init()         //Assign all the Objects in one Place
 	{
 
+		newtoDoEntityObject = new ToDo_Entity();
 
+		newSubTaskEntityObject = new SubTask_Entity();
 		todoNameTextField = findViewById(R.id.todoNameTextField);
-		//subTask1 = findViewById(R.id.subTask1);
 		IsDone = findViewById(R.id.todocheck_isdone);
 		subTaskLayout = findViewById(R.id.SubTaskLayout);
 		todo_reminderText = findViewById(R.id.todo_reminderText);
 		todo_reminderDue = findViewById(R.id.todo_reminderDue);
+		deleteButton = findViewById(R.id.deleteButton);
 		toolbar = findViewById(R.id.toolbar2);
 		toolbar.setTitle(ToDoTitle);
 		todoNameTextField.setText(ToDoTitle);
-
 	}
 
 
-
-	private void createNotificationChannel() {
+	private void createNotificationChannel()
+	{
 		// Create the NotificationChannel, but only on API 26+ because
 		// the NotificationChannel class is new and not in the support library
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			CharSequence name = getString(R.string.channel_name);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+		{
+			CharSequence name = getString(R.string.notification_channel_name_Reminder);
 			String description = getString(R.string.channel_description);
 			int importance = NotificationManager.IMPORTANCE_DEFAULT;
-			NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-			channel.setDescription(description);
+			NotificationChannel channelReminder = new NotificationChannel(CHANNEL_ID_Reminder, name, importance);
+			channelReminder.setDescription(description);
+
+
+			 name = getString(R.string.notification_channel_name_Due);
+			 description = getString(R.string.channel_description);
+			 importance = NotificationManager.IMPORTANCE_DEFAULT;
+			NotificationChannel channelDue = new NotificationChannel(CHANNEL_ID_Due, name, importance);
+			channelDue.setDescription(description);
+
+
+
 
 			// Register the channel with the system; you can't change the importance
 			// or other notification behaviors after this
 			NotificationManager notificationManager = getSystemService(NotificationManager.class);
-			notificationManager.createNotificationChannel(channel);
+			notificationManager.createNotificationChannel(channelReminder);
+			notificationManager.createNotificationChannel(channelDue);
 		}
+
+
 	}
-
-
-
 
 
 
 	public void logic()
 	{
 
-		//Setting On Click Listener
-		toolbar.setNavigationOnClickListener(v ->
+		todoNameTextField.setOnEditorActionListener(new TextView.OnEditorActionListener()
 		{
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+			{
 
-
-			Intent intent = new Intent(ToDoEdit_Create.this, ToDoList.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-			//intent.putExtra("toDoName",todoNameTextField.getText().toString());
-			//intent.putExtra("toDoID",toDoID);
-			//startActivity(intent);
-			finish();
-			startActivityIfNeeded(intent, 0);
+				if (actionId == KeyEvent.KEYCODE_CALL)
+				{
+					Log.d("KeyEvent","Enter Pressed");
+					newtoDoEntityObject.setToDoName(todoNameTextField.getText().toString());
+					viewModel.updateToDo(newtoDoEntityObject);
+				}
+				return false;
+			}
 
 		});
 
 
 
+
+
+		deleteButton.setOnClickListener(v ->
+		{
+
+				new AlertDialog.Builder(this)
+						.setTitle("Delete ToDo?")
+						.setCancelable(true)
+						.setPositiveButton(R.string.yes,(dialog, which) ->
+						{
+							{
+
+								deleting = true;
+								viewModel.getSubtasksFromToDO(newtoDoEntityObject.getToDoID()).removeObservers(this);
+								viewModel.deleteToDo(newtoDoEntityObject);
+								//Intent intent = new Intent(ToDoEdit_Create.this, ToDoList.class);
+								finish();
+								//startActivityIfNeeded(intent, 0);
+							}
+						})
+						.setNegativeButton(R.string.no,(dialog, which) ->
+						{
+							{
+								dialog.dismiss();
+							}
+						})
+
+						.show();
+
+
+		});
+
+
+
+		//Setting On Click Listener
+		/*
+		toolbar.setNavigationOnClickListener(v ->
+		{
+			Intent intent = new Intent(ToDoEdit_Create.this, ToDoList.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+			finish();
+			startActivityIfNeeded(intent, 0);
+		});
+
+		 */
+
 		todo_reminderText.setOnClickListener(v ->
 		{
 			getTime();
 			showTimePicker(v,0);        //Starts The Time and Date Picker
-
 		});
 
 
@@ -171,17 +353,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 			getTime();
 			showTimePicker(v,1); //Starts The Time and Date Picker
 		});
-
-
-		/*
-		Calendar calendar = Calendar.getInstance(Locale.GERMANY);
-		calendar.setTimeZone(getDefault());
-
-		calendar.setTime(new SimpleDateFormat().parse("dd-MM-yyyy"));
-		calendar.setTime(new SimpleDateFormat( Locale.GERMAN);
-		Calendar.getInstance(Locale.GERMANY);
-		System.out.println();
-		 */
 
 		/*
 		MaterialTimePicker.Builder MatTimePicker = new MaterialTimePicker.Builder();
@@ -193,8 +364,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 		//MatTimePicker.build().show(manager,"MatTimePicker");
 
 		*/
-
-
 
 	}
 
@@ -216,8 +385,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 	}
 
 
-
-
 	private void showTimePicker(View textView, int whatTextView)
 	{
 		//Second
@@ -237,6 +404,27 @@ public class ToDoEdit_Create extends AppCompatActivity
 	}
 
 
+	private void setText(int whatTextView,ToDo_Entity toDo_entity)
+	{
+
+		switch(whatTextView)
+		{
+			case 0:
+
+				todo_reminderText.setText(getResources().getString(R.string.reminder_with_time, toDo_entity.getRemindeTime().getHour(), toDo_entity.getRemindeTime().getMinute(), toDo_entity.getRemindeTime().getDayOfMonth(), toDo_entity.getRemindeTime().getMonthValue()));
+				break;
+			case 1:
+				todo_reminderDue.setText(getResources().getString(R.string.due_with_time, toDo_entity.getDueTime().getHour(), toDo_entity.getDueTime().getMinute(), toDo_entity.getDueTime().getDayOfMonth(), toDo_entity.getDueTime().getMonthValue()));
+				break;
+			default:
+				Log.wtf("Ballistic descent mode", "This Should definitely not happen (Error in whatTextView switch Case");
+				break;
+		}
+
+
+
+	}
+
 
 	private void showDatePicker(View textView, int whatTextView, int hourOfDay, int minute)
 	{
@@ -250,19 +438,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 
 				Log.d("DatePicker","Data Set successful");
-
 				TextView text = (TextView) textView;
-
-				//Creates a Data Object to pass Data to the WorkManager
-				Data datePackData = new Data.Builder()           //Very Smart name, I know.  Don't @ me
-						.putInt("minute", minute)
-						.putInt("hourOfDay", hourOfDay)
-						.putInt("dayOfMonth", dayOfMonth)
-						.putInt("month", month)
-						.putInt("year", year)
-						.build();
-
-
+				String NotificationType;
 
 				/*
 				Switch Case to change the respective TextView that was selected and called the  Time and DatePicker.
@@ -272,18 +449,38 @@ public class ToDoEdit_Create extends AppCompatActivity
 				{
 					case 0:
 						text.setText(getResources().getString(R.string.reminder_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
-						notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
+						NotificationType = "Reminder";
+						newtoDoEntityObject.setRemindeTime(ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone()) );
+
 						break;
 					case 1:
 						text.setText(getResources().getString(R.string.due_with_time, (int) hourOfDay, (int) minute, (int) dayOfMonth, (int) month));
-						notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
+						newtoDoEntityObject.setDueTime(ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone()) );
+						NotificationType = "ToDo Due";
+
 						break;
 					default:
 						Log.wtf("Ballistic descent mode", "This Should definitely not happen (Error in whatTextView switch Case");
+						NotificationType = "Because Java insists on this being here";
 						break;
-
-
 				}
+
+
+				//Creates a Data Object to pass Data to the WorkManager
+				Data datePackData = new Data.Builder()           //Very Smart name, I know.  Don't @ me
+
+						.putInt("toDoID",toDoID)
+						.putInt("FolderID",newtoDoEntityObject.getFKFolderID())
+						.putString("NotificationText",text.getText().toString())
+						.putString("NotificationType",NotificationType)
+						.putString("ToDoTitle",newtoDoEntityObject.getToDoName())
+						.build();
+
+
+
+
+				notificationPlaner(datePackData,year,  month,  dayOfMonth, hourOfDay,  minute);
+
 
 
 
@@ -297,18 +494,17 @@ public class ToDoEdit_Create extends AppCompatActivity
 	}
 
 
-
-
 	private void notificationPlaner( Data DatePackData,int year, int month, int dayOfMonth, int hourOfDay, int minute)
 	{
-		//saving the Time the USer has selected in a ZonedDateTime variable
-		ZonedDateTime selectedTime = ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone());
 
-		getTime(); //Grabbing the current Time
+
+		//saving the Time the User has selected in a ZonedDateTime variable
+		ZonedDateTime selectedTime = ZonedDateTime.of(year,month,dayOfMonth,hourOfDay,minute,0,0,currentTime.getZone());
+		getTime();//Grabbing the current Time
+
 		//Calculate the Duration between the current Time and the User selected Time
 		Duration delayToNotification = Duration.between(currentTime,selectedTime); //calculating the "Distance" between the two Dates
 
-		System.out.println("Duration "+delayToNotification);
 		Log.d("Time Duration", String.valueOf(delayToNotification));
 
 
@@ -317,9 +513,8 @@ public class ToDoEdit_Create extends AppCompatActivity
 				new OneTimeWorkRequest.Builder(NotificationWorker.class)
 						.setInitialDelay(delayToNotification)  //Setting the delay to the Value that was calculated before
 						.setInputData(DatePackData)             //Passing Data to the WorkManager
-						.addTag("TestRequest")                  //Adding a tag to keep track of this WorkRequest
+						.addTag(String.valueOf(newtoDoEntityObject.getToDoID()))  //Adding a tag to keep track of this WorkRequest
 						.build();                               //Build the request
-
 
 		//Submitting the WorkRequest to the system
 		WorkManager
@@ -365,13 +560,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 		subTaskCheckbox.setOnClickListener(v ->
 		{
 			//Checks if the Sub-Task Checkbox is toggled and disables/enables the corresponding EditText Fields
-			if (subTaskCheckbox.isChecked())
-			{
-				newSubText.setEnabled(false);
-			} else
-			{
-				newSubText.setEnabled(true);
-			}
+			newSubText.setEnabled(!subTaskCheckbox.isChecked());
 			Log.d("subTaskCheckbox", String.valueOf(subTaskCheckbox.isChecked()));
 
 		});
@@ -386,10 +575,6 @@ public class ToDoEdit_Create extends AppCompatActivity
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 			{
 
-				//System.out.println("Editor Action");
-				//System.out.println(actionId);
-				//System.out.println(event);
-				//System.out.println(KeyEvent.keyCodeToString(actionId));
 				if (actionId == KeyEvent.KEYCODE_ENDCALL)
 				{
 					Log.d("KeyEvent","Enter Pressed");
@@ -426,7 +611,7 @@ public class ToDoEdit_Create extends AppCompatActivity
 
 				System.out.println(index < getchildCount);
 
-
+				SubTask_Entity tmpSubTaskObject = new SubTask_Entity();
 
 
 				//if ((!hasFocus) & newSubText.getText().toString().isEmpty() & index != 0 & index+1 < getchildCount ) // code to execute when EditText loses focus and field is empty
@@ -445,7 +630,15 @@ public class ToDoEdit_Create extends AppCompatActivity
 					Log.d("newSubText", "Focus Lost. TextField Full");
 					Log.d("newSubText","Index Full: "+index);
 
-					newSubText(subTaskLayout.getChildCount());
+
+					tmpSubTaskObject.setSubTaskText(newSubText.getText().toString());
+					tmpSubTaskObject.setDone(false);
+					tmpSubTaskObject.setFKToDoID(toDoID);
+					viewModel.insertSubTask(tmpSubTaskObject);
+
+					//viewModel.returnScopedSubTasks(toDoID);
+
+					//newSubText(subTaskLayout.getChildCount());
 
 				}
 
@@ -459,20 +652,152 @@ public class ToDoEdit_Create extends AppCompatActivity
 		subRow.addView(newSubText);
 		subTaskLayout.addView(subRow);
 
-
-
-
-
-
 	}
 
+
+
+	/**
+	 * Creates a new Sub-task TextField under the {@link EditText todoNameTextField}
+	 * @param childCount The current amount of Sub-Task TextFields
+	 */
+	private void newSubTextDatabase(String subTaskText, boolean done, int subTaskID,int count)
+	{
+
+		int childCount = count ;
+
+
+
+		LinearLayout.LayoutParams LinParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+		//Creating and Constructing a new Sub-Task Layout
+		LinearLayout subRow = new LinearLayout(this);
+		subRow.setOrientation(LinearLayout.HORIZONTAL);
+		subRow.setLayoutParams(LinParam);
+		subRow.setId(subTaskID);
+
+		ImageButton addIcon = new ImageButton(this);
+		addIcon.setImageResource(R.drawable.ic_baseline_add_24);
+		addIcon.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0));
+
+		CheckBox subTaskCheckbox = new CheckBox(this);
+		subTaskCheckbox.setLayoutParams(new LinearLayout.LayoutParams((int) dptopx(33), LinearLayout.LayoutParams.MATCH_PARENT, 0));
+		subTaskCheckbox.setChecked(done);
+
+		EditText newSubText = new EditText(this);
+		newSubText.setHint("SubTask");
+		newSubText.setText(subTaskText);
+		newSubText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 2));
+		newSubText.setSingleLine(true);
+		newSubText.setId(subTaskID);
+
+
+		subTaskCheckbox.setOnClickListener(v ->
+		{
+			//Checks if the Sub-Task Checkbox is toggled and disables/enables the corresponding EditText Fields
+			newSubText.setEnabled(!subTaskCheckbox.isChecked());
+			Log.d("subTaskCheckbox", String.valueOf(subTaskCheckbox.isChecked()));
+
+		});
+
+
+
+		//Listener which Triggers when the Enter Key is being pressed while in one of the newSubText  Fields
+		newSubText.setOnEditorActionListener(new TextView.OnEditorActionListener()
+		{
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+			{
+
+				if (actionId == KeyEvent.KEYCODE_ENDCALL)
+				{
+					Log.d("KeyEvent","Enter Pressed");
+					newSubText.clearFocus();    //Removes the Focus of the current Sub-Task TextField
+				}
+				return false;
+			}
+
+		});
+
+
+		//Listener which Triggers if one of the newSubText Fields changes focus
+		newSubText.setOnFocusChangeListener(new View.OnFocusChangeListener()
+		{
+			@Override
+			public void onFocusChange(View v, boolean hasFocus)
+			{
+
+				if (hasFocus)
+				{
+					//If the EditText Field still has Focus the abort
+					return;
+				}
+
+				//Reference the Parent LinearLayout to the index of the Full newSubText Fields
+				LinearLayout parent = (LinearLayout) v.getParent().getParent();
+				int index = parent.indexOfChild((View) v.getParent());
+				Log.d("SubTask Index", String.valueOf(index));
+
+				//Get the number of current newSubText EditText Fields
+				int getchildCount = subTaskLayout.getChildCount();
+				Log.d("SubTask ChildCount", String.valueOf(getchildCount));
+
+				System.out.println(index < getchildCount);
+
+				SubTask_Entity tmpSubTaskObject = new SubTask_Entity();
+
+
+				//if ((!hasFocus) & newSubText.getText().toString().isEmpty() & index != 0 & index+1 < getchildCount ) // code to execute when EditText loses focus and field is empty
+
+				if ((!hasFocus) & newSubText.getText().toString().isEmpty() & index+1 < getchildCount ) // code to execute when EditText loses focus and field is empty
+				{
+					//If newSubText Field is empty and not the only Field then delete itself
+					Log.d("newSubText", "Focus Lost. TextField Empty");
+					Log.d("newSubText","Index Empty: "+index);
+
+					tmpSubTaskObject.setSubTaskText(subTaskText);
+					tmpSubTaskObject.setSubTaskID(subTaskID);
+					tmpSubTaskObject.setFKToDoID(toDoID);
+					System.out.println(toDoID);
+					viewModel.deleteSubTask(newSubTaskEntityObject);
+					viewModel.getSubtasksFromToDO(toDoID);
+
+					subTaskLayout.removeViewAt(index);
+
+				}else if ((!hasFocus) & !newSubText.getText().toString().isEmpty() & index+1 == getchildCount )
+				{
+					//If newSubText Field is full and the only Field then create a new newSubText Field
+					Log.d("newSubText", "Focus Lost. TextField Full");
+					Log.d("newSubText","Index Full: "+index);
+
+
+					tmpSubTaskObject.setSubTaskText(newSubText.getText().toString());
+					tmpSubTaskObject.setDone(false);
+					tmpSubTaskObject.setFKToDoID(toDoID);
+					viewModel.insertSubTask(tmpSubTaskObject);
+
+					//viewModel.returnScopedSubTasks(toDoID);
+
+					//newSubText(subTaskLayout.getChildCount());
+
+				}
+
+
+			}
+		});
+
+
+		//subRow.addView(addIcon);
+		subRow.addView(subTaskCheckbox);
+		subRow.addView(newSubText);
+		subTaskLayout.addView(subRow);
+
+	}
 
 
 	public float dptopx(float dp)
 	{
 		return dp * getResources().getDisplayMetrics().density;
 	}
-
 
 
 }
