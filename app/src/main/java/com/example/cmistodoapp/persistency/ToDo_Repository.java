@@ -8,14 +8,15 @@ import java.util.List;
 public class ToDo_Repository
 {
 
-	private ToDo_DAO toDo_dao;
-	private LiveData<List<ToDo_Entity>> toDoList_Repo;
+	private final ToDo_DAO toDo_dao;
+	private final LiveData<List<ToDo_Entity>> toDoList_Repo;
 	private LiveData<List<ToDo_Entity>> toDoByID_Repo;
 	LiveData<ToDo_Entity> toDoByIDObject_Repo;
 	int id;
 
 
-	public ToDo_Repository(Application application) {
+	public ToDo_Repository(Application application)
+	{
 		ToDoRoomDatabase db = ToDoRoomDatabase.getDatabase(application);
 		toDo_dao = db.DAO();
 		toDoList_Repo = toDo_dao.getSortedToDos();
@@ -34,8 +35,7 @@ public class ToDo_Repository
 		{
 			toDo_dao.deleteToDo(toDoEntity);
 		});
-	};
-
+	}
 
 
 	void deleteToDoWithSubTask(int  id)
@@ -44,10 +44,7 @@ public class ToDo_Repository
 		{
 			toDo_dao.deleteToDoWithSubTask(id);
 		});
-	};
-
-
-
+	}
 
 
 	void insertToDo(ToDo_Entity toDoEntity)
