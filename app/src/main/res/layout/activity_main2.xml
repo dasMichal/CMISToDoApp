@@ -116,33 +116,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
-                    android:layout_marginVertical="10dp"
-                    android:layout_weight="0">
-
-                <ImageView
-                        android:src="@drawable/ic_baseline_access_time_24"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/ReminderIcon"
-                        android:layout_weight="0"
-                        tools:srcCompat="@drawable/ic_baseline_access_time_24" />
+                    android:layout_marginVertical="10dp">
 
                 <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:id="@+id/todo_reminderText"
                         android:layout_weight="1"
                         android:textAlignment="gravity"
                         android:gravity="center"
-                        android:hint="Reminder"
+                        android:hint="@string/reminderTextfield_hint"
                         android:autoSizeTextType="none"
                         tools:text="@string/reminder_with_time"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        app:drawableStartCompat="@drawable/ic_baseline_access_time_24" />
+
+
+
+
+
             </LinearLayout>
 
             <View
@@ -156,36 +154,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
-                    android:layout_marginVertical="10dp"
-                    android:layout_weight="2">
+                    android:layout_marginVertical="10dp">
 
-                <ImageView
-                        android:src="@drawable/ic_baseline_access_time_24"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/DueIcon"
-                        android:layout_weight="0"
-                        tools:srcCompat="@drawable/ic_baseline_add_alert_24" />
 
                 <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:id="@+id/todo_reminderDue"
                         android:layout_weight="1"
                         android:textAlignment="gravity"
                         android:gravity="center"
-                        android:hint="Due"
+                        android:hint="@string/dueTextfield_hint"
                         android:autoSizeTextType="none"
                         tools:text="@string/due_with_time"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        app:drawableStartCompat="@drawable/ic_baseline_add_alert_24" />
+
             </LinearLayout>
 
             <View
                     android:id="@+id/divider3"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_weight="0" />
+                    android:background="?android:attr/listDivider" />
 
             <LinearLayout
                     android:orientation="horizontal"
@@ -194,24 +185,21 @@
                     android:layout_marginHorizontal="5dp"
                     android:layout_marginVertical="10dp">
 
-                <ImageView
-                        android:src="@drawable/ic_baseline_access_time_24"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/LocationIcon"
-                        android:layout_weight="0"
-                        tools:srcCompat="@drawable/ic_baseline_location_on_24" />
 
-                <TextView
-                        android:layout_width="wrap_content"
+                <EditText
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:id="@+id/todo_reminderLocation"
                         android:layout_weight="1"
                         android:textAlignment="gravity"
                         android:gravity="center"
-                        android:hint="Location"
+                        android:hint="@string/locationReminder_hint"
                         android:autoSizeTextType="none"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:singleLine="true"
+                        android:autofillHints=".AUTOFILL_HINT_POSTAL_ADDRESS_DEPENDENT_LOCALITY"
+                        app:drawableStartCompat="@drawable/ic_baseline_location_on_24"
+                        android:inputType="text" />
             </LinearLayout>
         </LinearLayout>
 
@@ -234,7 +222,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/deleteButton"
                 android:layout_weight="1"
-                android:layout_gravity="right" />
+                android:layout_gravity="end" />
 
     </androidx.cardview.widget.CardView>
 

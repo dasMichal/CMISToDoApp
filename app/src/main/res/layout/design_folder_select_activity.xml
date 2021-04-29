@@ -59,7 +59,7 @@
                 app:layout_constraintVertical_bias="0.989"
                 android:layout_marginBottom="40dp"
                 android:layout_marginEnd="16dp"
-                android:contentDescription="TODO"
+                android:contentDescription="@string/todoFAB_contentDescription"
                 app:useCompatPadding="false"
                 app:fabSize="normal"
                 app:layout_constraintTop_toBottomOf="@id/toolbar1" />
