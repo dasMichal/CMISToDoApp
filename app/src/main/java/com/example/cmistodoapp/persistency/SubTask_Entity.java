@@ -40,7 +40,7 @@ public class SubTask_Entity
 	@ColumnInfo(name= "SubTask_IsDone")
 	private boolean isDone;
 
-	@ColumnInfo(name= "FK_ToDoID")
+	@ColumnInfo(name= "FK_ToDoID", index = true)
 	private int FKToDoID;
 
 

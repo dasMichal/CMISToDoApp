@@ -5,8 +5,13 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.cmistodoapp.converter.Converters;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.time.ZonedDateTime;
 
 @Entity(tableName = "ToDo_table",
 		foreignKeys = {@ForeignKey(entity = ToDoFolder_Entity.class,
@@ -14,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 				childColumns = "FK_FolderID",
 				onDelete = ForeignKey.CASCADE)
 		})
+@TypeConverters({Converters.class})
 
 public class ToDo_Entity
 {
@@ -39,13 +45,10 @@ public class ToDo_Entity
 	private boolean isDone;
 
 
-	@ColumnInfo(name= "FK_FolderID")
+	@ColumnInfo(name= "FK_FolderID", index = true)
 	private int FKFolderID;
 
 
-
-
-	/*
 	@ColumnInfo(name= "ToDo_DueTime")
 	private ZonedDateTime dueTime;
 
