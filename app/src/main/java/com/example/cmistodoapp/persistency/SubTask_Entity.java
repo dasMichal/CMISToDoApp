@@ -22,8 +22,8 @@ public class SubTask_Entity
 	public SubTask_Entity()
 	{
 		//this.ToDoID = 0;
-		//this.SubTaskText = "name";
-		//this.isDone = false;
+		this.SubTaskText = "name";
+		this.isDone = false;
 
 	}
 
@@ -72,7 +72,7 @@ public class SubTask_Entity
 
 	public void setDone(boolean done)
 	{
-		isDone = done;
+		this.isDone = done;
 	}
 
 	public int getFKToDoID()
