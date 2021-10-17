@@ -115,26 +115,13 @@ public class ToDoList extends AppCompatActivity
 				adapter.notifyDataSetChanged();
 
 
-
-
-
 			}catch (NullPointerException e)
 			{
-
 				Log.e("Observable Scoped","No Object found. Null Point ");
-
 			}
 
 
-
-
-
-
-
 		});
-
-
-
 
 
 
@@ -149,7 +136,6 @@ public class ToDoList extends AppCompatActivity
 		toolbar = findViewById(R.id.toolbar);
 		recyclerView = findViewById(R.id.RecycleTestID);
 		fabToDoCreate = findViewById(R.id.fab_addToDo);
-
 
 	}
 
@@ -169,10 +155,7 @@ public class ToDoList extends AppCompatActivity
 						.setPositiveButton("Create",(dialog, which) ->
 						{
 							{
-								if (input.getText().toString().isEmpty())
-								{
-									return;
-								}else
+								if (!input.getText().toString().isEmpty())
 								{
 
 									ToDo_Entity newToDoEntity = new ToDo_Entity();
@@ -186,6 +169,8 @@ public class ToDoList extends AppCompatActivity
 									adapter.notifyDataSetChanged();
 
 								}
+
+
 							}
 						}).show();
 

@@ -81,6 +81,12 @@ public interface ToDo_DAO
 	LiveData<List<ToDo_Entity>> getToDosFromFolderTest(int folderNum);
 
 
+
+	@Transaction
+	@Query("SELECT * FROM ToDo_table WHERE FK_FolderID = :folderNum")
+	LiveData<List<ToDo_Entity>> getToDosFromFolderTestWorkManager(int folderNum);
+
+
 	@Query("DELETE FROM ToDo_table WHERE FK_FolderID = :folderNum ")
 	void deleteFolderWithToDos(int folderNum);
 
@@ -92,7 +98,7 @@ public interface ToDo_DAO
 	@Query("SELECT * FROM SubTask_table ORDER BY SubTask_ID ASC")
 	LiveData<List<SubTask_Entity>> getSortedSubTasks();
 
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
+	@Insert(onConflict  = OnConflictStrategy.REPLACE)
 	void insertSubTask(SubTask_Entity subTask);
 
 	@Update(onConflict = OnConflictStrategy.REPLACE)
