@@ -17,9 +17,13 @@ import java.time.ZonedDateTime;
 		foreignKeys = {@ForeignKey(entity = ToDoFolder_Entity.class,
 				parentColumns = "Folder_ID",
 				childColumns = "FK_FolderID",
-				onDelete = ForeignKey.CASCADE)
+				onDelete = ForeignKey.CASCADE
+		)
 		})
 @TypeConverters({Converters.class})
+
+
+
 
 public class ToDo_Entity
 {
@@ -29,6 +33,7 @@ public class ToDo_Entity
 		//this.ToDoID = 0;
 		this.ToDoName = "name";
 		this.isDone = false;
+
 
 	}
 
@@ -48,6 +53,9 @@ public class ToDo_Entity
 	@ColumnInfo(name= "FK_FolderID", index = true)
 	private int FKFolderID;
 
+	@ColumnInfo(name= "ToDo_Loc")
+	private String location;
+
 
 	@ColumnInfo(name= "ToDo_DueTime")
 	private ZonedDateTime dueTime;
@@ -55,6 +63,16 @@ public class ToDo_Entity
 	@ColumnInfo(name= "ToDo_RemindeTime")
 	private ZonedDateTime remindeTime;
 
+
+	public String getLocation()
+	{
+		return location;
+	}
+
+	public void setLocation(String location)
+	{
+		this.location = location;
+	}
 
 	public ZonedDateTime getDueTime()
 	{
