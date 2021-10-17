@@ -31,37 +31,25 @@ public class ToDo_Repository
 
 	void deleteToDo(ToDo_Entity toDoEntity)
 	{
-		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
-		{
-			toDo_dao.deleteToDo(toDoEntity);
-		});
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() -> toDo_dao.deleteToDo(toDoEntity));
 	}
 
 
 	void deleteToDoWithSubTask(int  id)
 	{
-		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
-		{
-			toDo_dao.deleteToDoWithSubTask(id);
-		});
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() -> toDo_dao.deleteToDoWithSubTask(id));
 	}
 
 
 	void insertToDo(ToDo_Entity toDoEntity)
 	{
-		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
-		{
-			toDo_dao.insertToDo(toDoEntity);
-		});
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() -> toDo_dao.insertToDo(toDoEntity));
 	}
 
 	void updateToDo(ToDo_Entity toDoEntity)
 	{
 
-		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
-		{
-			toDo_dao.updateToDo(toDoEntity);
-		});
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() -> toDo_dao.updateToDo(toDoEntity));
 
 	}
 

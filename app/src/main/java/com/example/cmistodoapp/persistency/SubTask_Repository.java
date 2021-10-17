@@ -10,7 +10,7 @@ public class SubTask_Repository
 {
 
 
-	private ToDo_DAO toDo_dao;
+	private final ToDo_DAO toDo_dao;
 	LiveData<List<ToDosWithSubTasks>> SubTasks_Scoped;
 
 	public SubTask_Repository(Application application)
@@ -21,19 +21,13 @@ public class SubTask_Repository
 
 	void insert(SubTask_Entity subTask)
 	{
-		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
-		{
-			toDo_dao.insertSubTask(subTask);
-		});
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() -> toDo_dao.insertSubTask(subTask));
 	}
 
 	void deleteSubTask(SubTask_Entity subTask)
 	{
-		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
-		{
-			toDo_dao.deleteSubTask(subTask);
-		});
-	};
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() -> toDo_dao.deleteSubTask(subTask));
+	}
 
 	LiveData<List<ToDosWithSubTasks>> getSubtasksFromToDO(int id)
 	{

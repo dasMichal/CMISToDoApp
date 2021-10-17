@@ -10,8 +10,8 @@ public class ToDoFolder_Repository
 {
 
 
-	private ToDo_DAO toDo_dao;
-	private LiveData<List<ToDoFolder_Entity>> ToDoFolderList_Repo;
+	private final ToDo_DAO toDo_dao;
+	private final LiveData<List<ToDoFolder_Entity>> ToDoFolderList_Repo;
 	LiveData<ToDoFolder_Entity> ToDoFolderByIdObject_Repo;
 	LiveData<List<FolderWithToDos>> ToDo_Scoped;
 
@@ -32,10 +32,7 @@ public class ToDoFolder_Repository
 
 	void insert(ToDoFolder_Entity folder)
 	{
-		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
-		{
-			toDo_dao.insertFolder(folder);
-		});
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() -> toDo_dao.insertFolder(folder));
 	}
 
 
@@ -43,12 +40,8 @@ public class ToDoFolder_Repository
 
 	void deleteFolder(ToDoFolder_Entity folder)
 	{
-		ToDoRoomDatabase.databaseWriteExecutor.execute(() ->
-		{
-			toDo_dao.deleteFolder(folder);
-		});
-	};
-
+		ToDoRoomDatabase.databaseWriteExecutor.execute(() -> toDo_dao.deleteFolder(folder));
+	}
 
 
 	LiveData<ToDoFolder_Entity> getToDoFolderObject_byID(int id)
@@ -71,6 +64,7 @@ public class ToDoFolder_Repository
 		return toDo_dao.getToDosFromFolderTest(folderid);
 
 	}
+
 
 
 }
