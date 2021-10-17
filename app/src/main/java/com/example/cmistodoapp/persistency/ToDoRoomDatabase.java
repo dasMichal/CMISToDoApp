@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {ToDo_Entity.class, ToDoFolder_Entity.class,SubTask_Entity.class}, version = 3, exportSchema = false)
+@Database(entities = {ToDo_Entity.class, ToDoFolder_Entity.class,SubTask_Entity.class}, version = 5, exportSchema = false)
 public abstract class ToDoRoomDatabase extends RoomDatabase
 {
 
