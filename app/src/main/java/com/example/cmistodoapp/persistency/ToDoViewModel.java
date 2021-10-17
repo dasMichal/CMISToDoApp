@@ -1,12 +1,12 @@
 package com.example.cmistodoapp.persistency;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 
 import java.util.List;
 
@@ -18,14 +18,11 @@ public class ToDoViewModel extends AndroidViewModel
 	private final SubTask_Repository repositorySubTask;
 	private final LiveData<List<ToDo_Entity>> myToDoListLIVE;
 	private final LiveData<List<ToDoFolder_Entity>> myToDoFolderLIVE;
+	private  LiveData<List<ToDo_Entity>> workmanagerTestToDo;
 
 	LiveData<List<ToDo_Entity>> myToDoByID ;
 	MutableLiveData<String> myToDOTitel ;
 
-
-	private LiveData<List<ToDo_Entity>> mAllWords;
-	private LiveData<List<ToDo_Entity>> searchByLiveData;
-	private MutableLiveData<Integer> filterLiveData = new MutableLiveData<>();
 
 
 	public ToDoViewModel(@NonNull Application application)
@@ -38,10 +35,6 @@ public class ToDoViewModel extends AndroidViewModel
 		myToDoListLIVE = repositoryToDo.getAllToDos();
 		myToDoFolderLIVE = repositoryFolder.getAllFolder();
 
-		searchByLiveData = Transformations.switchMap(filterLiveData, repositoryToDo::getByID);
-
-		//myToDoByID = new MutableLiveData<>();
-		//myToDOTitel = new MutableLiveData<>();
 
 	}
 
@@ -50,7 +43,7 @@ public class ToDoViewModel extends AndroidViewModel
 	{
 
 		return myToDoListLIVE;
-	};
+	}
 
 
 	public LiveData<List<ToDo_Entity>> getTODOByID(int id)
@@ -62,7 +55,6 @@ public class ToDoViewModel extends AndroidViewModel
 
 	public LiveData<ToDo_Entity> getToDoObject_byID(int id)
 	{
-
 		setID(id);
 		return repositoryToDo.getToDoObject_byID(id);
 	}
@@ -71,18 +63,6 @@ public class ToDoViewModel extends AndroidViewModel
 	public void setID(int id)
 	{
 		repositoryToDo.setID(id);
-	}
-
-	public void setFilter(int id)
-	{
-		System.out.println("FilterSet to " +id);
-		filterLiveData.setValue(id);
-	}
-
-
-	public LiveData<List<ToDo_Entity>> getSearchBy()
-	{
-		return searchByLiveData;
 	}
 
 
@@ -94,15 +74,16 @@ public class ToDoViewModel extends AndroidViewModel
 
 	public void deleteToDo(ToDo_Entity toDoEntity)
 	{
+
+		Log.d("ViewModel ToDO","Deleting a ToDO");
 		repositoryToDo.deleteToDo(toDoEntity);
-	};
+	}
 
 
 	public void deleteToDoWithSubTask(int id)
 	{
 		repositoryToDo.deleteToDoWithSubTask(id);
-	};
-
+	}
 
 
 	public LiveData<String> getToDoTitle(LiveData<ToDo_Entity> todo)
@@ -124,7 +105,7 @@ public class ToDoViewModel extends AndroidViewModel
 	public LiveData<List<ToDoFolder_Entity>> getAllFolders()
 	{
 		return myToDoFolderLIVE;
-	};
+	}
 
 	public LiveData<ToDoFolder_Entity> getFolderObjectbyID(int id)
 	{
@@ -155,10 +136,9 @@ public class ToDoViewModel extends AndroidViewModel
 
 	public void deleteFolder(ToDoFolder_Entity folder)
 	{
+		Log.d("ViewModel Folder","Deleting a Folder");
 		repositoryFolder.deleteFolder(folder);
-	};
-
-
+	}
 
 
 	//---------------------------SubTasks----------------------
@@ -189,7 +169,7 @@ public class ToDoViewModel extends AndroidViewModel
 	{
 		repositorySubTask.deleteSubTask(subTask);
 
-	};
+	}
 
 
 }
