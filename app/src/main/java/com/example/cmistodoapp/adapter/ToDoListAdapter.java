@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -14,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cmistodoapp.R;
 import com.example.cmistodoapp.persistency.ToDo_Entity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +25,7 @@ import java.util.Locale;
 
 public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHolder>
 {
-	private List<String> data;
+
 	private List<ToDo_Entity> todoData;
 
 	private final OnItemClickListener listener;
@@ -48,6 +49,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 	}
 
 
+	@NotNull
 	@Override
 	public ToDoListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
 	{
@@ -75,6 +77,11 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 			holder.timeandDate.setText(tmp.format(formatter));
 		}
 
+		if(this.todoData.get(position).getLocation() != null)
+		{
+
+			holder.LocationText.setText(this.todoData.get(position).getLocation());
+		}
 
 
 	}
@@ -94,6 +101,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 		private final CheckBox ToDoChecked;
 		private final CardView todo1;
 		private final TextView timeandDate;
+		private final TextView LocationText;
 
 
 
@@ -104,13 +112,16 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 			this.ToDoChecked = view.findViewById(R.id.ToDoChecked);
 			this.todo1 = view.findViewById(R.id.todo1);
 			this.timeandDate = view.findViewById(R.id.TimeandDateText);
+			this.LocationText = view.findViewById(R.id.LocationText);
 
 
 
 			ToDoChecked.setOnClickListener(v ->
 			{
+
 				//Toast.makeText(this, "Checked : " + getLayoutPosition()+" "), Toast.LENGTH_SHORT).show();
-				Toast.makeText(v.getContext(), "Checked : " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+				//Toast.makeText(v.getContext(), "Checked : " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+
 			});
 
 
@@ -125,7 +136,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 		{
 
 
-			Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.ToDoText.getText(), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.ToDoText.getText(), Toast.LENGTH_SHORT).show();
 			Context context = view.getContext();
 
 			listener.onToDoClick(todo1.getId(),context);
@@ -147,20 +158,7 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
 				{
 
 
-					System.out.println(data);
-					//System.out.println(getLayoutPosition());
-					System.out.println(data.get(getLayoutPosition()));
-					//System.out.println(data.get(getAdapterPosition()));
-					System.out.println(ToDoChecked.isChecked());
-
-					//listener.onItemClick(integer);
-
-					//int curSize = getItemCount();
-
-
-
-
-					Toast.makeText(v.getContext(), " "+ integer, Toast.LENGTH_SHORT).show();
+					//Toast.makeText(v.getContext(), " "+ integer, Toast.LENGTH_SHORT).show();
 
 
 
