@@ -7,7 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -15,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cmistodoapp.R;
 import com.example.cmistodoapp.persistency.ToDoFolder_Entity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 
 
 
+	@NotNull
 	@Override
 	public FolderAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
 	{
@@ -156,7 +158,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 		public void onClick(View view)
 		{
 
-			Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.folderText.getText(), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(view.getContext(), "position : " + getLayoutPosition() + " text : " + this.folderText.getText(), Toast.LENGTH_SHORT).show();
 
 
 			Context context = view.getContext();
@@ -184,25 +186,18 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 		}
 
 
-		private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener()
-		{
-			@Override
-			public boolean onMenuItemClick(MenuItem item)
+		private final MenuItem.OnMenuItemClickListener onEditMenu = item -> {
+
+			switch (item.getItemId())
 			{
+				case 1:
 
-				switch (item.getItemId())
-				{
-					case 1:
-						//Do stuff
-						break;
+				case 2:
 
-					case 2:
-						//Do stuff
-
-						break;
-				}
-				return true;
+					//Do stuff
+					break;
 			}
+			return true;
 		};
 
 

@@ -1,6 +1,5 @@
 package com.example.cmistodoapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,17 +61,13 @@ public class FolderSelectActivity extends AppCompatActivity
 
 			Log.d("OnChange Object", "Folder on change");
 
-			adapter = new FolderAdapter(folder, new FolderAdapter.OnItemClickListener()
+			adapter = new FolderAdapter(folder, (id, localContext) ->
 			{
-				@Override
-				public void onFolderClick(int id, Context localContext)
-				{
-					Intent intent = new Intent(localContext, ToDoList.class);
-					//intent.putExtra("selectedFolder", folder.get(id).getFolderName());
-					intent.putExtra("folderID", id);
-					localContext.startActivity(intent);
+				Intent intent = new Intent(localContext, ToDoList.class);
+				//intent.putExtra("selectedFolder", folder.get(id).getFolderName());
+				intent.putExtra("folderID", id);
+				localContext.startActivity(intent);
 
-				}
 			}, new FolderAdapter.OnCreateContextMenuListener()
 			{
 				@Override
@@ -103,15 +98,13 @@ public class FolderSelectActivity extends AppCompatActivity
 					LinearLayout parent2 = (LinearLayout) tempRecycle.getChildAt(position);
 					int realID =  parent2.getChildAt(0).getId();
 
-
 					newToDOFolder.setFolderID(folder.get(position).getFolderID());
 					newToDOFolder.setFolderName(folder.get(position).getFolderName());
 
-					System.out.println("RealID: "+realID);
-					System.out.println("Pos in Recycle: "+position);
+					//System.out.println("RealID: "+realID);
+					//System.out.println("Pos in Recycle: "+position);
 
-
-					menu.add(realID, realID, 0, "Delete");//groupId, itemId, order, title
+					menu.add(realID, realID, 0, R.string.menue_delete);//groupId, itemId, order, title
 				}
 			}
 
@@ -156,19 +149,16 @@ public class FolderSelectActivity extends AppCompatActivity
 		System.out.println("item.getItemId() = " + item.getItemId());
 		System.out.println(item.getGroupId());
 
-		switch (item.getTitle().toString())
+		if ("Delete".equals(item.getTitle().toString()))
 		{
-			case "Delete":
+			System.out.println("Delete");
 
-				System.out.println("Delete");
-
-				deleteFolder();
+			deleteFolder();
 
 
-				return true;
-			default:
-				return super.onContextItemSelected(item);
+			return true;
 		}
+		return super.onContextItemSelected(item);
 	}
 
 	private void deleteFolder()
@@ -189,12 +179,7 @@ public class FolderSelectActivity extends AppCompatActivity
 
 					}
 				})
-				.setNegativeButton(R.string.no,(dialog, which) ->
-				{
-					{
-						dialog.dismiss();
-					}
-				})
+				.setNegativeButton(R.string.no,(dialog, which) -> dialog.dismiss())
 
 				.show();
 
@@ -207,10 +192,7 @@ public class FolderSelectActivity extends AppCompatActivity
 		fab.setOnClickListener(this::createFolder);
 
 
-		toolbar1.setNavigationOnClickListener(v ->
-		{
-			menue1.open();
-		});
+		toolbar1.setNavigationOnClickListener(v -> menue1.open());
 
 
 
@@ -219,24 +201,6 @@ public class FolderSelectActivity extends AppCompatActivity
 
 
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -273,11 +237,6 @@ public class FolderSelectActivity extends AppCompatActivity
 
 							adapter.notifyDataSetChanged();
 							Snackbar.make(view, "Folder Created", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
-						} else
-						{
-
-							return;
 
 						}
 
