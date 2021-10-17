@@ -379,11 +379,13 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 		//Getting the Current Time using the Java 8 Date Time API
 		currentTime = ZonedDateTime.now();
 
+
 		System.out.println("Stunde " + currentTime.getHour());
 		System.out.println("Minute " + currentTime.getMinute());
 		System.out.println("tag: " + currentTime.getDayOfMonth());
 		System.out.println("Monat: " + currentTime.getMonth());
 		System.out.println("Jahr: " + currentTime.getYear());
+
 
 	}
 
@@ -485,7 +487,9 @@ public class ToDoEdit_Create extends AppCompatActivity implements LifecycleOwner
 
 
 		//First
+
 		datePickerDialog = new DatePickerDialog(this, DataSetListener, currentTime.getYear(), currentTime.getMonthValue() - 1, currentTime.getDayOfMonth()); //Creates the DatePicker Dialog
+
 		datePickerDialog.show(); //Shows the DatePicker Dialog
 	}
 
