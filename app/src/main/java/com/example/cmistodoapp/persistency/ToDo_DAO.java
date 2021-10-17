@@ -92,7 +92,7 @@ public interface ToDo_DAO
 	@Query("SELECT * FROM SubTask_table ORDER BY SubTask_ID ASC")
 	LiveData<List<SubTask_Entity>> getSortedSubTasks();
 
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
+	@Insert(onConflict  = OnConflictStrategy.REPLACE)
 	void insertSubTask(SubTask_Entity subTask);
 
 	@Update(onConflict = OnConflictStrategy.REPLACE)
