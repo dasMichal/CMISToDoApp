@@ -14,7 +14,8 @@
 
         <activity android:name=".ToDoList"
 
-            android:parentActivityName=".FolderSelectActivity" >
+            android:parentActivityName=".FolderSelectActivity"
+                android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,7 +33,8 @@
         </activity>
 
 
-        <activity android:name=".FolderSelectActivity">
+        <activity android:name=".FolderSelectActivity"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
