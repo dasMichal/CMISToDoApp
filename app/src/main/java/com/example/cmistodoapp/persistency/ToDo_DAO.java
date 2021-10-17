@@ -81,6 +81,12 @@ public interface ToDo_DAO
 	LiveData<List<ToDo_Entity>> getToDosFromFolderTest(int folderNum);
 
 
+
+	@Transaction
+	@Query("SELECT * FROM ToDo_table WHERE FK_FolderID = :folderNum")
+	LiveData<List<ToDo_Entity>> getToDosFromFolderTestWorkManager(int folderNum);
+
+
 	@Query("DELETE FROM ToDo_table WHERE FK_FolderID = :folderNum ")
 	void deleteFolderWithToDos(int folderNum);
 
