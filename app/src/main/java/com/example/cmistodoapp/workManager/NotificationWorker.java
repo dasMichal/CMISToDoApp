@@ -1,4 +1,4 @@
-package com.example.cmistodoapp.WorkManager;
+package com.example.cmistodoapp.workManager;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
-import androidx.lifecycle.LiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -38,15 +37,12 @@ public class NotificationWorker extends Worker
 	public Result doWork()
 	{
 
-		final String CHANNEL_ID = "Seven" ;
-
 		int toDoID = getInputData().getInt("toDoID",0);
 		int folderID = getInputData().getInt("FolderID",0);
-		String notificationText2 = getInputData().getString("NotificationText");
 		String NotificationType = getInputData().getString("NotificationType");
 		ToDo_Entity tempToDo = new ToDo_Entity();
-		LiveData<ToDo_Entity> toDoByIDObject_Repo;
-		//getInstance(getApplicationContext());
+		String CHANNEL_ID = getInputData().getString("NotificationChannel");
+
 
 		Context context = getApplicationContext();
 		ToDoRoomDatabase db = ToDoRoomDatabase.getDatabase(context);
@@ -68,7 +64,7 @@ public class NotificationWorker extends Worker
 
 
 
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), Objects.requireNonNull(CHANNEL_ID))
 				.setSmallIcon(R.drawable.ic_baseline_notifications_24)
 				.setContentTitle(NotificationType)
 				.setContentText(tempToDo.getToDoName())
